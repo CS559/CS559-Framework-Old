@@ -3,11 +3,11 @@
 
 /**
  * CS559 3D World Framework Code
- * 
+ *
  * Simple Example Objects - they don't do much, but for convenience they
  * provide wrappers around THREE objects
- * 
- *  
+ *
+ *
  */
 
  /** @module SimpleObjects */
@@ -31,7 +31,7 @@ let simpleObjectCounter = 0;
  * @typedef CubeProperties
  * @type {object}
  * @property {THREE.Material} [material]
- * @property {string} [color]
+ * @property {string | number} [color]
  * @property {number} [x=0]
  * @property {number} [y=0]
  * @property {number} [z=0]
@@ -39,7 +39,7 @@ let simpleObjectCounter = 0;
  */
 export class GrCube extends GrObject {
     /**
-     * @param {CubeProperties} params 
+     * @param {CubeProperties} params
      * @param {Array<string|Array>} [paramInfo] - parameters for the GrObject (for sliders)
      */
     constructor(params={},paramInfo=undefined) {
@@ -55,7 +55,7 @@ export class GrCube extends GrObject {
         let mesh = new T.Mesh(geom, material);
         // note that we have to make the Object3D before we can call
         // super and we have to call super before we can use this
-        
+
         super(`Cube-${simpleObjectCounter++}`,mesh,paramInfo);
 
         // put the object in its place
@@ -67,7 +67,7 @@ export class GrCube extends GrObject {
 
 export class GrSphere extends GrObject {
     /**
-     * @param {CubeProperties} params 
+     * @param {CubeProperties} params
      * @param {Array<string|Array>} [paramInfo] - parameters for the GrObject (for sliders)
      */
     constructor(params, paramInfo) {
@@ -83,12 +83,50 @@ export class GrSphere extends GrObject {
         let mesh = new T.Mesh(geom, material);
         // note that we have to make the Object3D before we can call
         // super and we have to call super before we can use this
-        
+
         super(`Sphere-${simpleObjectCounter++}`,mesh,paramInfo);
 
         // put the object in its place
         mesh.position.x = params.x ? Number(params.x) : 0;
         mesh.position.y = params.y ? Number(params.y) : 0;
         mesh.position.z = params.z ? Number(params.z) : 0;
+    }
+}
+
+export class GrTorusKnot extends GrObject {
+    /**
+     * @param {Object} [params]
+     * @param {string | number} [params.color]
+     * @param {THREE.Material} [params.material]
+     * @param {number} [params.x]
+     * @param {number} [params.y]
+     * @param {number} [params.z]
+     * @param {number} [params.size]
+     * @param {Array<string|Array>} [paramInfo] - parameters for the GrObject (for sliders)
+     */
+    constructor(params = {}, paramInfo = []) {
+        let material;
+        if (params.material) {
+            material = params.material;
+        } else if (params.color) {
+            material = new T.MeshStandardMaterial( {color:params.color} );
+        } else {
+            material = new T.MeshStandardMaterial( {color: "#FF8888"});
+        }
+        let geom = new T.TorusKnotBufferGeometry();
+        let mesh = new T.Mesh(geom, material);
+        // note that we have to make the Object3D before we can call
+        // super and we have to call super before we can use this
+
+        super(`TorusKnot-${simpleObjectCounter++}`,mesh,paramInfo);
+
+        // put the object in its place
+        mesh.position.x = params.x ? Number(params.x) : 0;
+        mesh.position.y = params.y ? Number(params.y) : 0;
+        mesh.position.z = params.z ? Number(params.z) : 0;
+
+        // set size by scaling
+        let size = params.size || 1.0;
+        mesh.scale.set(size,size,size);
     }
 }
