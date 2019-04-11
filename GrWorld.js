@@ -82,6 +82,9 @@ export class GrWorld {
 
         // the GrWorld "has a" of the main things we need in three
         this.scene = new T.Scene();
+        this.solo_scene = new T.Scene(); // secondary scene for showing a solo object.
+        this.active_scene = this.scene; // active scene to draw.
+
         // make a renderer if it isn't given
         /** @type THREE.WebGLRenderer */
         this.renderer = "renderer" in params ? params.renderer :
@@ -144,10 +147,32 @@ export class GrWorld {
             this.camera.position.copy(lookfrom);
             this.camera.lookAt(lookat);
         }
+        // create a camera for viewing a solo object.
+        // This isn't something the user should worry about, so values are set directly.
+        this.solo_camera = new T.PerspectiveCamera( 45, width/height, 0.1, 2000 );
+        this.solo_camera.position.set(1, 1, 1);
+        this.active_camera = this.camera
 
         // if we either made the camera or controls are specified...
         this.controls = (!("camera" in params) || ("controls" in params)) ?
-            new T.OrbitControls(this.camera,this.renderer.domElement) : undefined;
+            new T.OrbitControls(this.active_camera,this.renderer.domElement) : undefined;
+
+        // For some reason, this version of three is missing the saveState method.
+        // Hack in something here to at least save something.
+        let cSaveState = function() {
+            this.position0 = this.position;
+            this.target0   = this.target;
+        }
+        let cReset = function() {
+            this.position = this.position0;
+            this.target   = this.target0;
+            this.update();
+        }
+        if (!this.controls.saveState)
+        {
+            this.controls.saveState = cSaveState;
+            this.controls.reset = cReset;
+        }
 
         // if we either specify where things go in the DOM or we made our
         // own canvas, install it
@@ -210,12 +235,85 @@ export class GrWorld {
             bottomLight.position.set(0,-1,0.1);
             this.scene.add(bottomLight);
         }
+        // add a pair of lights to the "solo" scene as well.
+        this.solo_scene.add(new T.AmbientLight(0xfffff8, 0.6));
+        this.solo_scene.add(new T.DirectionalLight(0xf8f8ff, 1.0))
 
         // Keep track of rendering timings
         this.lastRenderTime = 0;
         this.lastTimeOfDay = 12;
+
+        // Track the "active" object, which we may follow, view solo, etc.
+        /**@type GrObject */
+        this.active_object = undefined;
+        this.solo_mode = false;
     } // end of constructor
 
+    setActiveObject(name)
+    {
+        if (this.solo_mode)
+        {
+            // if we're in solo mode, put back the previously solo-ed object first,
+            // then show the newly selected one.
+            this.active_object.objects.forEach(element => {
+                this.scene.add(element);
+            });
+            this.active_object = this.objects.find(ob => ob.name === name);
+            this.showSoloObject();
+        }
+        else
+        {
+            this.active_object = this.objects.find(ob => ob.name === name);
+        }
+    }
+
+    showSoloObject()
+    {
+        if (!this.solo_mode)
+        {
+            // if we weren't already in solo mode (i.e. not just choosing a new object)
+            // then make sure to save global state.
+            this.solo_mode = true;
+            this.controls.saveState();
+        }
+        this.active_object.objects.forEach(element => {
+            this.solo_scene.add(element);
+        });
+        this.active_camera = this.solo_camera;
+        let bbox = new T.Box3();
+        bbox.setFromObject(this.active_object.objects[0]);
+        this.active_camera.position.set((bbox.max.x+bbox.min.x)/2, (bbox.max.y+bbox.min.y)/2, Math.max(3, 2*bbox.max.z));
+        this.controls.object = this.solo_camera;
+        this.controls.target = this.active_object.objects[0].position;
+        this.controls.update();
+        this.active_scene = this.solo_scene;
+    }
+
+    followActiveObject()
+    {
+        this.active_object.objects[0].add(this.camera);
+        this.active_object.objects[0].add(this.solo_camera);
+        this.controls.saveState();
+    }
+
+    stopFollowingActiveObject()
+    {
+        this.scene.add(this.camera);
+        this.scene.add(this.solo_camera);
+    }
+
+    showWorld()
+    {
+        this.solo_mode = false;
+        this.active_object.objects.forEach(element => {
+            this.scene.add(element);
+        });
+        this.active_camera = this.camera;
+        this.controls.reset();
+        this.controls.object = this.camera;
+        this.controls.update();
+        this.active_scene = this.scene;
+    }
     add(grobj) {
         this.objects.push(grobj);
         // be sure to add all the objects to the scene
@@ -229,7 +327,7 @@ export class GrWorld {
      */
     draw() {
         this.lastRenderTime = performance.now();
-        this.renderer.render(this.scene,this.camera);
+        this.renderer.render(this.active_scene,this.active_camera);
     }
 
     /**
