@@ -3,6 +3,18 @@
 
 //import THREE from "three";
 
+/**
+ * Simplified creation of Shader Material for CS559 Framework
+ * 
+ * The "shaderMaterial" function creates a THREE shader material
+ * given URLs for the vertex and fragment shader.
+ * 
+ * It work asynchronously - it gives simple shaders until the
+ * real ones load.
+ * 
+ * There are potentially issues if the fragment shader
+ * ends up getting compiled before the vertex shader.
+ */
 
 // these four lines fake out TypeScript into thinking that THREE
 // has the same type as the T.js module, so things work for type checking
