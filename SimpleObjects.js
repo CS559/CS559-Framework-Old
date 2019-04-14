@@ -36,6 +36,8 @@ let simpleObjectCounter = 0;
  * @property {number} [y=0]
  * @property {number} [z=0]
  * @property {number} [size=1]
+ * @property {number} [widthSegments=8] - only for Sphere
+ * @property {number} [heightSegments=6] - only for Sphere
  */
 export class GrCube extends GrObject {
     /**
@@ -79,7 +81,12 @@ export class GrSphere extends GrObject {
         } else {
             material = new T.MeshStandardMaterial( {color: "#FF8888"});
         }
-        let geom = new T.SphereBufferGeometry(params.size ? (params.size / 2.0) : 1.0);
+        let geom = new T.SphereBufferGeometry(params.size ? (params.size   / 2.0) : 1.0,
+            params.widthSegments ? params.widthSegments : 8,
+            params.heightSegments ? params.heightSegments : 6
+        );
+        console.log(params.widthSegments);
+        
         let mesh = new T.Mesh(geom, material);
         // note that we have to make the Object3D before we can call
         // super and we have to call super before we can use this
