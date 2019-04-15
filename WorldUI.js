@@ -48,12 +48,12 @@ export class WorldUI {
         InputHelpers.makeHead("World Controls",this.div,{tight:true});
         let _world = this.world;
         // create object selector
-        this.select = InputHelpers.makeSelect(world.objects.map(ob => ob.name), this.div);
-        this.select.onchange = function() {
+        this.selectObject = InputHelpers.makeSelect(world.objects.map(ob => ob.name), this.div);
+        this.selectObject.onchange = function() {
             _world.setActiveObject(this.value);
         }
 
-        this.select.onchange(null); // call to set initial selection
+        this.selectObject.onchange(null); // call to set initial selection
         // create "view solo" checkbox.
         this.selectionChkList = InputHelpers.makeFlexDiv(this.div);
         /**@type HTMLInputElement */
@@ -62,20 +62,11 @@ export class WorldUI {
             if (this.checked) { _world.showSoloObject(); }
             else              { _world.showWorld(); }
         }
-        this.chkFollow = InputHelpers.makeCheckbox("chkFollow", this.selectionChkList, "Follow Object");
-        this.chkFollow.onclick = function() {
-            if (this.checked) {_world.followActiveObject();}
-            else              {_world.stopFollowingActiveObject();}
+        this.selectViewMode = InputHelpers.makeSelect(["Default", "Follow Object", "Drive Object"], this.div);
+        this.selectViewMode.onchange = function() {
+            _world.setViewMode(this.value);
         }
-        // this.sliders = world.params.map(function(param) {
-        //     let slider = new InputHelpers.LabelSlider(param.name,
-        //         {where:self.div,
-        //          width:width-20,
-        //          min:param.min,max:param.max,step:((param.max-param.min)/30),
-        //          initial:param.initial});
-        //     return slider;
-        // });
-        // this.sliders.forEach(function(sl) { sl.oninput = function() {self.update();};});
+        this.selectViewMode.onchange(null);
         this.update(); 
     }
     update() {
