@@ -55,6 +55,7 @@ T = THREE;
  * @property [groundplanesize=5] - if we create a ground plane, how big
  * @property [lookfrom] - where to put the camera (only if we make the camera)
  * @property [lookat] - where to have the camera looking (only if we make the camera)
+ * @property [runbutton] - a checkbox (HTML) to switch things on or off (can be undefined)
  */
 
  /** @class GrWorld
@@ -288,6 +289,9 @@ export class GrWorld {
         this.active_object = undefined;
         this.solo_mode = false;
         this.view_mode = "Orbit Camera"
+
+        // Have a switch for turning things on and off
+        this.runbutton = params.runbutton;
     } // end of constructor
 
     restoreActiveObject()
@@ -581,8 +585,10 @@ export class GrWorld {
      * last redraw and advances that much before redrawing
      */
     animate() {
-        let delta = performance.now() - this.lastRenderTime;
-        this.advance(delta,this.lastTimeOfDay);
+        if (!this.runbutton || this.runbutton.checked) {
+            let delta = performance.now() - this.lastRenderTime;
+            this.advance(delta,this.lastTimeOfDay);
+        }
         // since we're already running an animation loop, update view controls here.
         // Pass in a delta since that's what fly controls want. Orbit controls can just ignore.
         if (this.view_mode == "Orbit Camera")
