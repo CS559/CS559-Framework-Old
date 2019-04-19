@@ -329,7 +329,7 @@ export class GrWorld {
                 this.orbitControlOff();
                 break;
             case "Fly Camera":
-                this.flyContolOff();
+                this.flyControlOff();
                 break;
             case "Follow Object":
                 this.followObjectOff();
