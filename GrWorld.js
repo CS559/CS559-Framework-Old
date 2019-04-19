@@ -543,7 +543,7 @@ export class GrWorld {
         this.camera.rotation.set(0,0,0);
         this.solo_camera.position.set(0,0,0);
         this.solo_camera.rotation.set(0,0,0);
-        // this.active_object.objects.forEach(ob => {hideObject(ob);});
+        this.active_object.objects.forEach(ob => {hideObject(ob);});
     }
 
     driveObjectOff()
