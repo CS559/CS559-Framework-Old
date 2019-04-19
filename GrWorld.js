@@ -188,6 +188,17 @@ export class GrWorld {
             }
             this.update(0.1);
         }
+        let register = function()
+        {
+            this.domElement.addEventListener( 'contextmenu', contextmenu, false );
+
+            this.domElement.addEventListener( 'mousemove', _mousemove, false );
+            this.domElement.addEventListener( 'mousedown', _mousedown, false );
+            this.domElement.addEventListener( 'mouseup', _mouseup, false );
+
+            window.addEventListener( 'keydown', _keydown, false );
+            window.addEventListener( 'keyup', _keyup, false );
+        }
         // if (!this.controls.saveState)
         {
             this.orbit_controls.saveState = orbitSaveState;
@@ -197,6 +208,10 @@ export class GrWorld {
         {
             this.fly_controls.saveState = flySaveState;
             this.fly_controls.reset = flyReset;
+        }
+        if (!this.fly_controls.register)
+        {
+            this.fly_controls.register = register;
         }
 
         // if we either specify where things go in the DOM or we made our
