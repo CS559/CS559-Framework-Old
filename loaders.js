@@ -21,21 +21,28 @@ import {GrObject} from "./GrObject.js";
  * 
  * @param {THREE.Object3D} obj 
  */
-function normObject(obj) {
-    console.log("Norm Object");
-    console.log(obj.children);
-    let geom = obj.children[0].geometry;
-    geom.computeBoundingBox();
-    let box = geom.boundingBox;
-    console.log(box);
+function normObject(obj, scale=1.0, center=true, ground=true) {
+    // since other bounding box things aren't reliable
+    let box = new T.Box3();
+    box.setFromObject(obj);
+    // easier than vector subtract
     let dx = box.max.x-box.min.x;
     let dy = box.max.y-box.min.y;
     let dz = box.max.z-box.min.z;
-    console.log("delta");
-    console.log(dx,dy,dz);
-    let size = dx;
-    console.log("Size",size);
-    obj.scale.set(1/size,1/size,1/size);
+    let size = Math.max(dx,dy,dz)
+    let s = scale/size
+    obj.scale.set(s,s,s);
+
+    if (center) {
+        obj.translateX( - s * (box.max.x+box.min.x)/2 );
+        obj.translateZ( - s * (box.max.z+box.min.z)/2 );
+        if (!ground) {  // only center Y if not grounding
+            obj.translateY( - s * (box.max.y+box.min.y)/2 );
+        }
+    }
+    if (ground) {
+        obj.translateY( - box.min.y * s);
+    }
 }
 
 /**
@@ -51,6 +58,7 @@ export class ObjGrObject extends GrObject {
      * @property {string} params.obj
      * @property {string} [params.mtl]
      * @property {Object} [params.mtloptions]
+     * @property {Number} [norm] - normalize the object (make the largest dimension this value)
      */
     constructor(params={}) {
         // check to make sure the libraries are loaded
@@ -86,6 +94,8 @@ export class ObjGrObject extends GrObject {
                 let objLoader = new T.OBJLoader();
                 objLoader.setMaterials(myMaterialCreator);
                 objLoader.load(params.obj,function(obj) {
+                    if (params.norm)
+                        normObject(obj, params.norm);
                     objholder.add(obj);
                 });
             });
@@ -93,6 +103,8 @@ export class ObjGrObject extends GrObject {
         } else {    // no material file, just an obj
             let objLoader = new T.OBJLoader();
             objLoader.load(params.obj,function(obj) {
+                if (params.norm)
+                    normObject(obj, params.norm);
                 objholder.add(obj);
             });
 
@@ -102,6 +114,12 @@ export class ObjGrObject extends GrObject {
 
 /* load from an FBX file */
 export class FbxGrObject extends GrObject {
+    /**
+     * 
+     * @param {Object} [params] 
+     * @property {string} params.fbx
+     * @property {Number} [norm] - normalize the object (make the largest dimension this value)
+     */
     constructor(params={}) {
         if (!T.FBXLoader) {
             alert("Bad HTML: No FBX Loader");
@@ -113,7 +131,8 @@ export class FbxGrObject extends GrObject {
 
         let fbx = new T.FBXLoader();
         fbx.load(params.fbx, function(obj) {
-            // normObject(obj);
+            if (params.norm)
+                normObject(obj, params.norm);
             objholder.add(obj);
         });
     }
