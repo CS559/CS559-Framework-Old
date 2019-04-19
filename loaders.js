@@ -1,3 +1,6 @@
+/*jshint esversion: 6 */
+// @ts-check
+
 /**
  * Access to THREE's loaders within the CS559 framework
  */
@@ -16,7 +19,7 @@ import {GrObject} from "./GrObject.js";
 /**
  * Rescale an object - assumes that the object is a group with 1 mesh in it
  * 
- * @param {T.Object3D} obj 
+ * @param {THREE.Object3D} obj 
  */
 function normObject(obj) {
     console.log("Norm Object");
@@ -42,6 +45,13 @@ function normObject(obj) {
  * Warning: While ObjLoader2 might be better, ObjLoader is simpler
  */
 export class ObjGrObject extends GrObject {
+    /**
+     * 
+     * @param {Object} params 
+     * @property {string} params.obj
+     * @property {string} [params.mtl]
+     * @property {Object} [params.mtloptions]
+     */
     constructor(params={}) {
         // check to make sure the libraries are loaded
         if (!T.MTLLoader) {
@@ -55,7 +65,7 @@ export class ObjGrObject extends GrObject {
 
         if (!params.obj) {
             alert("Bad OBJ object - no obj file given!");
-            throw "No OBJ given!"
+            throw "No OBJ given!";
         }
 
         let name = params.name || "Objfile(UNNAMED)";
@@ -75,7 +85,6 @@ export class ObjGrObject extends GrObject {
                 myMaterialCreator.preload();
                 let objLoader = new T.OBJLoader();
                 objLoader.setMaterials(myMaterialCreator);
-                console.log("Got materials",myMaterialCreator)
                 objLoader.load(params.obj,function(obj) {
                     objholder.add(obj);
                 });
@@ -85,7 +94,7 @@ export class ObjGrObject extends GrObject {
             let objLoader = new T.OBJLoader();
             objLoader.load(params.obj,function(obj) {
                 objholder.add(obj);
-            })
+            });
 
         }
     }
@@ -96,7 +105,7 @@ export class FbxGrObject extends GrObject {
     constructor(params={}) {
         if (!T.FBXLoader) {
             alert("Bad HTML: No FBX Loader");
-            throw "No THREE.FBXLoader"
+            throw "No THREE.FBXLoader";
         }
         let name = params.name || "Objfile(UNNAMED)";
         let objholder = new T.Group();
