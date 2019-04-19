@@ -62,7 +62,7 @@ export class WorldUI {
             if (this.checked) { _world.showSoloObject(); }
             else              { _world.showWorld(); }
         }
-        this.selectViewMode = InputHelpers.makeSelect(["Default", "Follow Object", "Drive Object"], this.div);
+        this.selectViewMode = InputHelpers.makeSelect(["Orbit Camera", "Fly Camera", "Follow Object", "Drive Object"], this.div);
         this.selectViewMode.onchange = function() {
             _world.setViewMode(this.value);
         }
