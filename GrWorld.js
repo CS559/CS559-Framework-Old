@@ -191,14 +191,21 @@ export class GrWorld {
         }
         let register = function()
         {
-            this.domElement.addEventListener( 'contextmenu', contextmenu, false );
+            function bind( scope, fn ) {
 
-            this.domElement.addEventListener( 'mousemove', _mousemove, false );
-            this.domElement.addEventListener( 'mousedown', _mousedown, false );
-            this.domElement.addEventListener( 'mouseup', _mouseup, false );
+                return function () {
 
-            window.addEventListener( 'keydown', _keydown, false );
-            window.addEventListener( 'keyup', _keyup, false );
+                    fn.apply( scope, arguments );
+
+                };
+
+            }
+            this.domElement.addEventListener( 'mousemove', bind(this, this.mousemove), false );
+            this.domElement.addEventListener( 'mousedown', bind(this, this.mousedown), false );
+            this.domElement.addEventListener( 'mouseup', bind(this, this.mouseup), false );
+
+            window.addEventListener( 'keydown', bind(this, this.keydown), false );
+            window.addEventListener( 'keyup', bind(this, this.keyup), false );
         }
         // if (!this.controls.saveState)
         {
@@ -466,6 +473,7 @@ export class GrWorld {
         }
         else
         {
+            // @ts-ignore
             this.orbit_controls.reset();
         }
     }
@@ -474,6 +482,7 @@ export class GrWorld {
     {
         if (!this.solo_mode)
         {
+            // @ts-ignore
             this.orbit_controls.saveState();
         }
         this.orbit_controls.enabled = false;
@@ -500,6 +509,7 @@ export class GrWorld {
         }
         else
         {
+            // @ts-ignore
             this.fly_controls.reset();
         }
         this.fly_controls.register();
@@ -509,6 +519,7 @@ export class GrWorld {
     {
         if (!this.solo_mode)
         {
+            // @ts-ignore
             this.fly_controls.saveState();
         }
         this.fly_controls.dispose();
