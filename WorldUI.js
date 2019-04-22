@@ -51,6 +51,7 @@ export class WorldUI {
         // run control
         this.runbutton = InputHelpers.makeCheckbox("Run",this.div);
         world.runbutton = this.runbutton;
+        world.runbutton.checked = true;
         this.runslider = new InputHelpers.LabelSlider("speed",{width:250,min:.1,max:3,step:.1,initial:1,where:this.div});
         world.speedcontrol = this.runslider.range;
 
