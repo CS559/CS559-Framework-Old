@@ -55,8 +55,9 @@ export class WorldUI {
         this.runslider = new InputHelpers.LabelSlider("speed",{width:250,min:.1,max:3,step:.1,initial:1,where:this.div});
         world.speedcontrol = this.runslider.range;
 
-        // create object selector
-        this.selectObject = InputHelpers.makeSelect(world.objects.map(ob => ob.name), this.div);
+        // create object selector for rideable
+        let rideable = world.objects.filter(obj => obj.rideable);
+        this.selectObject = InputHelpers.makeSelect(rideable.map(ob => ob.name), this.div);
         this.selectObject.onchange = function() {
             _world.setActiveObject(this.value);
         }
