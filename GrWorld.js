@@ -531,7 +531,7 @@ export class GrWorld {
         this.active_object.objects[0].add(this.camera);
         let bbox = new T.Box3();
         bbox.setFromObject(this.active_object.objects[0]);
-        this.camera.position.set(0, bbox.max.y-bbox.min.y, 1.5*(bbox.max.z-bbox.min.z));
+        this.camera.position.set(0, bbox.max.y-bbox.min.y, -1.5*(bbox.max.z-bbox.min.z));
         this.solo_camera.position.set(0, bbox.max.y-bbox.min.y, -1.5*(bbox.max.z-bbox.min.z));
         // Set look direction
         let target = this.active_object.objects[0].position;
