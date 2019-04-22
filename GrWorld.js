@@ -542,8 +542,8 @@ export class GrWorld {
 
     followObjectOn()
     {
-        this.active_object.objects[0].add(this.solo_camera);
-        this.active_object.objects[0].add(this.camera);
+        this.active_object.rideable.add(this.solo_camera);
+        this.active_object.rideable.add(this.camera);
         let bbox = new T.Box3();
         bbox.setFromObject(this.active_object.objects[0]);
         this.camera.position.set(0, bbox.max.y-bbox.min.y, -1.5*(bbox.max.z-bbox.min.z));
@@ -567,8 +567,8 @@ export class GrWorld {
             ob.visible = false;
             ob.children.forEach(child => {hideObject(child);});
         }
-        this.active_object.objects[0].add(this.solo_camera);
-        this.active_object.objects[0].add(this.camera);
+        this.active_object.rideable.add(this.solo_camera);
+        this.active_object.rideable.add(this.camera);
         this.camera.position.set(0,0,0);
         this.camera.rotation.set(0,0,0);
         this.solo_camera.position.set(0,0,0);
