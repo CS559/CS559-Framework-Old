@@ -84,11 +84,21 @@ export class GrObject {
      */
     constructor(name,objectOrObjects,paramInfo) {
         // simple declarations of defaults so we can easily identify members
-        /** @type Array<THREE.Object3D> */
+        /** @type {Array<THREE.Object3D>} */
         this.objects = [];
-        /** @type Array<Object> */
+        /** @type {Array<Object>} */
         this.params = [];
+        /** @type {String} */
         this.name = name;
+
+        /** A flag for if this object is ridable - if so, it should be a specific THREE object to
+         * parent the object to */
+        /** @type {THREE.Object3D} */
+        this.rideable = undefined;
+
+        /** the unique ID is a number (non-zero) that comes from the world - set by GrWorld.add*/
+        /** @type {Number} */
+        this.id = 0;
 
         // set up the object list
         if (Array.isArray(objectOrObjects)) {

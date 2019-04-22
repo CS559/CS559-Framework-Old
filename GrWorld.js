@@ -78,6 +78,13 @@ export class GrWorld {
      * @param {GrWorldProperties} params 
      */
     constructor(params={}) {
+        /** @type {Number} */
+        this.objCount = 0;
+
+        // mainly a set for checking object name legality
+        /** @type {Object} */
+        this.objNames = {};
+
         // this keeps a list of objects in the world
         /** @type Array<GrObject> */
         this.objects = [];
@@ -572,7 +579,24 @@ export class GrWorld {
         this.solo_scene.add(this.solo_camera);
     }
 
+    /**
+     * Add an object to the world - this takes care of putting everything
+     * into the scene, as well as assigning IDs
+     * @param {GrObject} grobj 
+     */
     add(grobj) {
+        if (grobj.id) {
+            console.warn(`Adding GrObj that already has an assigned ID. Object named "${grobj.name}"`);
+        } else {
+            grobj.id = this.objCount++;
+        }
+
+        if (grobj.name in this.objNames) {
+            console.warn(`Adding GrObj with non-unique name. Object named "${grobj.name}"`);
+        } else {
+            this.objNames[grobj.name] = grobj;
+        }
+
         this.objects.push(grobj);
         // be sure to add all the objects to the scene
         grobj.objects.forEach(element => {
