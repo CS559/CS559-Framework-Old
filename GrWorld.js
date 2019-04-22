@@ -452,9 +452,13 @@ export class GrWorld {
     showWorld()
     {
         this.solo_mode = false;
-        this.active_object.objects.forEach(element => {
-            this.scene.add(element);
-        });
+        if (this.active_object) {
+            this.active_object.objects.forEach(element => {
+                this.scene.add(element);
+            });
+        } else {
+            console.warn("No active object when expecting one!");
+        }
         this.orbit_controls.object = this.camera;
         // this.orbit_controls.update();
         this.fly_controls.object = this.camera;
