@@ -55,7 +55,8 @@ T = THREE;
  * @property [groundplanesize=5] - if we create a ground plane, how big
  * @property [lookfrom] - where to put the camera (only if we make the camera)
  * @property [lookat] - where to have the camera looking (only if we make the camera)
- * @property [runbutton] - a checkbox (HTML) to switch things on or off (can be undefined)
+ * @property {HTMLInputElement} [runbutton] - a checkbox (HTML) to switch things on or off (can be undefined)
+ * @property {HTMLInputElement} [speedcontrol] - a slider to get the speed (must be an HTML element, not a LabelSlider)
  */
 
  /** @class GrWorld
@@ -124,7 +125,7 @@ export class GrWorld {
         }
    
         // make a camera
-        /** @type THREE.PerspectiveCamera */
+        /** @type {THREE.PerspectiveCamera} */
         this.camera = undefined;
         if ("camera" in params) {
             this.camera = params.camera;
@@ -298,7 +299,10 @@ export class GrWorld {
         this.view_mode = "Orbit Camera"
 
         // Have a switch for turning things on and off
+        /** @type {HTMLInputElement} */
         this.runbutton = params.runbutton;
+        /** @type {HTMLInputElement} */
+        this.speedcontrol = params.speedcontrol;
     } // end of constructor
 
     restoreActiveObject()
@@ -598,7 +602,8 @@ export class GrWorld {
     animate() {
         if (!this.runbutton || this.runbutton.checked) {
             let delta = performance.now() - this.lastRenderTime;
-            this.advance(delta,this.lastTimeOfDay);
+            let speed = this.speedcontrol ? Number(this.speedcontrol.value) : 1.0;
+            this.advance(delta * speed,this.lastTimeOfDay);
         }
         // since we're already running an animation loop, update view controls here.
         // Pass in a delta since that's what fly controls want. Orbit controls can just ignore.

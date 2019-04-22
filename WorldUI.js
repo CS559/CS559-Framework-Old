@@ -47,6 +47,13 @@ export class WorldUI {
         this.div = InputHelpers.makeBoxDiv({width:width},where);
         InputHelpers.makeHead("World Controls",this.div,{tight:true});
         let _world = this.world;
+
+        // run control
+        this.runbutton = InputHelpers.makeCheckbox("Run",this.div);
+        world.runbutton = this.runbutton;
+        this.runslider = new InputHelpers.LabelSlider("speed",{width:250,min:.1,max:3,step:.1,initial:1,where:this.div});
+        world.speedcontrol = this.runslider.range;
+
         // create object selector
         this.selectObject = InputHelpers.makeSelect(world.objects.map(ob => ob.name), this.div);
         this.selectObject.onchange = function() {
