@@ -405,36 +405,6 @@ export class GrWorld {
         this.currentStateOn();
     }
 
-    // viewActiveObject()
-    // {
-    //     // get bounding box, so we can position camera outside object geometry.
-    //     let bbox = new T.Box3();
-    //     bbox.setFromObject(this.active_object.objects[0]);
-    //     if (this.solo_mode)
-    //     {
-    //         this.active_camera.position.set(0, bbox.max.y-bbox.min.y, 1.5*bbox.max.z-bbox.min.z);
-    //     }
-    //     else
-    //     {
-    //         this.active_camera.position.set(
-    //             Math.max(1.0, (bbox.max.x+bbox.min.x)/2),
-    //             Math.max(1.0, (bbox.max.y+bbox.min.y)/2),
-    //             Math.max(3, 1.2*bbox.max.z));
-    //     }
-    //     // set controls to use whatever the active camera is, and position so it can see the active object.
-    //     let target = this.active_object.objects[0].position;
-    //     if (this.view_mode == "Orbit Camera")
-    //     {
-    //         this.orbit_controls.target = target;
-    //         this.orbit_controls.update();
-    //     }
-    //     else if (this.view_mode != "Drive Object")
-    //     {
-    //         this.active_camera.lookAt(target);
-    //     }
-    //     // this.orbit_controls.update();
-    // }
-
     showSoloObject()
     {
         this.solo_mode = true;
