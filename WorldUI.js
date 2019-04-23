@@ -86,8 +86,10 @@ export class WorldUI {
         InputHelpers.makeSpan("LookAt:",this.div);
         this.selectLook = InputHelpers.makeSelect(world.objects.map(ob => ob.name), this.div);
         this.selectLook.onchange = function () {
-            // _world.setViewMode("Fly Camera");
-            // self.selectViewMode.value = "Fly Camera";
+            if ((world.view_mode == "Drive Object") || (world.view_mode == "Follow Object")) {
+                _world.setViewMode("Orbit Camera");
+                self.selectViewMode.value = "Orbit Camera";
+            }
             let name = this.value;
             _world.setActiveObject(name);
             let obj = _world.objects.find(ob => ob.name === name);
@@ -97,31 +99,5 @@ export class WorldUI {
             world.camera.lookAt(lookAt);
             world.orbit_controls.target = new T.Vector3(camparams[3],camparams[4],camparams[5]);
         }
-
-        this.update(); 
     }
-    update() {
-        // let vals = this.sliders.map(sl => Number(sl.value()));
-        // this.world.update(vals);
-    }
-
-    /**
-     * 
-     * @param {number | string} param 
-     * @param {number} value 
-     */
-    set(param,value) {
-        // if (typeof(param)==='string') {
-        //     for(let i=0; i<this.world.params.length; i++) {
-        //         if (param==this.world.params[i].name) {
-        //             // this.sliders[i].set(Number(value));
-        //             return;
-        //         }
-        //     }
-        //     throw `Bad parameter ${param} to set`;
-        // } else {
-            // this.sliders[param].set(Number(value));
-        // }
-    }
-
 }
