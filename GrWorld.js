@@ -474,14 +474,14 @@ export class GrWorld {
         {
             let bbox = new T.Box3();
             bbox.setFromObject(this.active_object.objects[0]);
-            this.camera.position.set(
-                Math.max(1.0, (bbox.max.x+bbox.min.x)/2),
-                Math.max(1.0, (bbox.max.y+bbox.min.y)/2),
-                Math.max(3, 1.2*bbox.max.z));
-            this.solo_camera.position.set(
-                Math.max(1.0, (bbox.max.x+bbox.min.x)/2),
-                Math.max(1.0, (bbox.max.y+bbox.min.y)/2),
-                Math.max(3, 1.2*bbox.max.z));
+            let x = (bbox.max.x+bbox.min.x)/2;
+            let y = (bbox.max.y+bbox.min.y)/2;
+            let z = (bbox.max.z+bbox.min.z)/2;
+            let cam_x = x > 0 ? Math.max(1.0, x) : Math.min(-1.0, x);
+            let cam_y = y > 0 ? Math.max(1.0, y) : Math.min(-1.0, y);
+            let cam_z = z > 0 ? Math.max(1.0, z) : Math.min(-1.0, z);
+            this.camera.position.set(cam_x, cam_y, cam_z);
+            this.solo_camera.position.set(cam_x, cam_y, cam_z);
             // set controls to use whatever the active camera is, and position so it can see the active object.
             this.orbit_controls.target = this.active_object.objects[0].position;
             this.orbit_controls.update();
