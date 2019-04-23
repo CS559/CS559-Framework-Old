@@ -67,8 +67,13 @@ export function paramObjFromParam(param) {
  * - update - which takes an array of paramaters and sets things accordingly
  * - advance - which moves the animation ahead a small amount
  * 
- * Note that a `GrObject` does not add itself to the scene (other things take care)
- * of that. When the object is added to the world, 
+ * 
+ * and optionally
+ * - lookfrom/lookat
+ * 
+ * Note that a `GrObject` does not add itself to the scene (other things take care
+ * of that). When the object is added to the world, it's THREE objects are added to
+ * the `Scene` (the THREE world container). 
  */
 export class GrObject {
     /**
@@ -154,6 +159,15 @@ export class GrObject {
     update(paramValues) {
     }
 
+    /**
+     * return a plausible lookfrom/lookat pair to look at this object
+     * this makes a guess based on the bounding box, but an object may
+     * want to override to give a better view
+     * 
+     * Returns an array of 6 numbers (lookfrom X,Y,Z, lookat X, Y, Z)
+     * 
+     * @returns {Array<Number>}
+     */
     lookFromLookAt() {
         let bbox = new T.Box3();
         bbox.setFromObject(this.objects[0]);
