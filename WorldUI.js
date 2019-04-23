@@ -55,10 +55,6 @@ export class WorldUI {
         this.runslider = new InputHelpers.LabelSlider("speed",{width:250,min:.1,max:3,step:.1,initial:1,where:this.div});
         world.speedcontrol = this.runslider.range;
 
-        // create object selector for rideable
-        let rideable = world.objects.filter(obj => obj.rideable);
-        this.selectObject = InputHelpers.makeSelect(rideable.map(ob => ob.name), this.div);
-
         // create "view solo" checkbox.
         this.selectionChkList = InputHelpers.makeFlexDiv(this.div);
         /**@type HTMLInputElement */
@@ -73,13 +69,34 @@ export class WorldUI {
         }
         this.selectViewMode.onchange(null);
 
-        this.selectObject.onchange = function() {
+        InputHelpers.makeBreak(this.div);
+
+        // create object selector for rideable
+        InputHelpers.makeSpan("Drive:",this.div);
+        let rideable = world.objects.filter(obj => obj.rideable);
+        this.selectRideable = InputHelpers.makeSelect(rideable.map(ob => ob.name), this.div);
+        this.selectRideable.onchange = function() {
             _world.setActiveObject(this.value);
             _world.setViewMode("Drive Object");
             self.selectViewMode.value = "Drive Object";
         }
-        // don't set initial selection because we don't want to begin in drive mode
-        //this.selectObject.onchange(null); // call to set initial selection
+
+        // create a selector for isolate
+        InputHelpers.makeBreak(this.div);
+        InputHelpers.makeSpan("LookAt:",this.div);
+        this.selectLook = InputHelpers.makeSelect(world.objects.map(ob => ob.name), this.div);
+        this.selectLook.onchange = function () {
+            // _world.setViewMode("Fly Camera");
+            // self.selectViewMode.value = "Fly Camera";
+            let name = this.value;
+            _world.setActiveObject(name);
+            let obj = _world.objects.find(ob => ob.name === name);
+            let camparams = obj.lookFromLookAt();
+            world.camera.position.set(camparams[0],camparams[1],camparams[2]);
+            let lookAt = new T.Vector3(camparams[3],camparams[4],camparams[5])
+            world.camera.lookAt(lookAt);
+            world.orbit_controls.target = new T.Vector3(camparams[3],camparams[4],camparams[5]);
+        }
 
         this.update(); 
     }

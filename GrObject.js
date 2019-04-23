@@ -152,7 +152,26 @@ export class GrObject {
      * @param {Array<Number>} paramValues 
      */
     update(paramValues) {
+    }
 
+    lookFromLookAt() {
+        let bbox = new T.Box3();
+        bbox.setFromObject(this.objects[0]);
+        let x = (bbox.max.x+bbox.min.x)/2;
+        let y = (bbox.max.y+bbox.min.y)/2;
+        let z = (bbox.max.z+bbox.min.z)/2;
+
+        let dx = (bbox.max.x-x);
+        let dy = (bbox.max.y-y);
+        let dz = (bbox.max.z-z);
+
+        let d = Math.max(dx,dy,dz);
+
+        let fx = x + d*3;
+        let fy = y + d*3;
+        let fz = z + d*3;
+
+        return [fx,fy,fz,x,y,z];
     }
 
 }

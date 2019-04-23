@@ -470,20 +470,13 @@ export class GrWorld {
     orbitControlOn()
     {
         this.orbit_controls.enabled = true;
-        if (this.solo_mode)
+        if (this.solo_mode && this.active_object)
         {
-            let bbox = new T.Box3();
-            bbox.setFromObject(this.active_object.objects[0]);
-            let x = (bbox.max.x+bbox.min.x)/2;
-            let y = (bbox.max.y+bbox.min.y)/2;
-            let z = (bbox.max.z+bbox.min.z)/2;
-            let cam_x = x > 0 ? Math.max(1.0, x) : Math.min(-1.0, x);
-            let cam_y = y > 0 ? Math.max(1.0, y) : Math.min(-1.0, y);
-            let cam_z = z > 0 ? Math.max(1.0, z) : Math.min(-1.0, z);
-            this.camera.position.set(cam_x, cam_y, cam_z);
-            this.solo_camera.position.set(cam_x, cam_y, cam_z);
+            let camparams = this.active_object.lookFromLookAt();
+            this.solo_camera.position.set(camparams[0],camparams[1],camparams[2]);
+            this.active_camera.lookAt(camparams[3],camparams[4],camparams[5]);
             // set controls to use whatever the active camera is, and position so it can see the active object.
-            this.orbit_controls.target = this.active_object.objects[0].position;
+            this.orbit_controls.target.set(camparams[3],camparams[4],camparams[5]);
             this.orbit_controls.update();
         }
         else
@@ -505,22 +498,11 @@ export class GrWorld {
 
     flyControlOn()
     {
-        if (this.solo_mode)
+        if (this.solo_mode && this.active_object)
         {
-            // get bounding box, so we can position camera outside object geometry.
-            let bbox = new T.Box3();
-            bbox.setFromObject(this.active_object.objects[0]);
-            this.camera.position.set(
-                Math.max(1.0, (bbox.max.x+bbox.min.x)/2),
-                Math.max(1.0, (bbox.max.y+bbox.min.y)/2),
-                Math.max(3, 1.2*bbox.max.z));
-            this.solo_camera.position.set(
-                Math.max(1.0, (bbox.max.x+bbox.min.x)/2),
-                Math.max(1.0, (bbox.max.y+bbox.min.y)/2),
-                Math.max(3, 1.2*bbox.max.z));
-            // set controls to use whatever the active camera is, and position so it can see the active object.
-            let target = this.active_object.objects[0].position;
-            this.active_camera.lookAt(target);
+            let camparams = this.active_object.lookFromLookAt();
+            this.solo_camera.position.set(camparams[0],camparams[1],camparams[2]);
+            this.active_camera.lookAt(camparams[3],camparams[4],camparams[5]);
         }
         else
         {
@@ -542,16 +524,20 @@ export class GrWorld {
 
     followObjectOn()
     {
-        this.active_object.rideable.add(this.solo_camera);
-        this.active_object.rideable.add(this.camera);
-        let bbox = new T.Box3();
-        bbox.setFromObject(this.active_object.objects[0]);
-        this.camera.position.set(0, bbox.max.y-bbox.min.y, -1.5*(bbox.max.z-bbox.min.z));
-        this.solo_camera.position.set(0, bbox.max.y-bbox.min.y, -1.5*(bbox.max.z-bbox.min.z));
-        // Set look direction
-        let target = this.active_object.objects[0].position;
-        this.camera.lookAt(target);
-        this.solo_camera.lookAt(target);
+        if (this.active_object.rideable) {
+            this.active_object.rideable.add(this.solo_camera);
+            this.active_object.rideable.add(this.camera);
+            let bbox = new T.Box3();
+            bbox.setFromObject(this.active_object.objects[0]);
+            this.camera.position.set(0, bbox.max.y-bbox.min.y, -1.5*(bbox.max.z-bbox.min.z));
+            this.solo_camera.position.set(0, bbox.max.y-bbox.min.y, -1.5*(bbox.max.z-bbox.min.z));
+            // Set look direction
+            let target = this.active_object.objects[0].position;
+            this.camera.lookAt(target);
+            this.solo_camera.lookAt(target);
+        } else {
+            this.followObjectOff();
+        }
     }
 
     followObjectOff()
@@ -562,18 +548,22 @@ export class GrWorld {
 
     driveObjectOn()
     {
-        let hideObject = function(ob)
-        {
-            ob.visible = false;
-            ob.children.forEach(child => {hideObject(child);});
+        if (this.active_object.rideable) {
+            let hideObject = function(ob)
+            {
+                ob.visible = false;
+                ob.children.forEach(child => {hideObject(child);});
+            }
+            this.active_object.rideable.add(this.solo_camera);
+            this.active_object.rideable.add(this.camera);
+            this.camera.position.set(0,0,0);
+            this.camera.rotation.set(0,Math.PI,0);
+            this.solo_camera.position.set(0,0,0);
+            this.solo_camera.rotation.set(0,Math.PI,0);
+            this.active_object.objects.forEach(ob => {hideObject(ob);});
+        } else {
+            this.driveObjectOff();
         }
-        this.active_object.rideable.add(this.solo_camera);
-        this.active_object.rideable.add(this.camera);
-        this.camera.position.set(0,0,0);
-        this.camera.rotation.set(0,Math.PI,0);
-        this.solo_camera.position.set(0,0,0);
-        this.solo_camera.rotation.set(0,Math.PI,0);
-        this.active_object.objects.forEach(ob => {hideObject(ob);});
     }
 
     driveObjectOff()
