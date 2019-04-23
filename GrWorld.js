@@ -570,9 +570,9 @@ export class GrWorld {
         this.active_object.rideable.add(this.solo_camera);
         this.active_object.rideable.add(this.camera);
         this.camera.position.set(0,0,0);
-        this.camera.rotation.set(0,0,0);
+        this.camera.rotation.set(0,Math.PI,0);
         this.solo_camera.position.set(0,0,0);
-        this.solo_camera.rotation.set(0,0,0);
+        this.solo_camera.rotation.set(0,Math.PI,0);
         this.active_object.objects.forEach(ob => {hideObject(ob);});
     }
 
