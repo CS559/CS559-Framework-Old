@@ -58,11 +58,7 @@ export class WorldUI {
         // create object selector for rideable
         let rideable = world.objects.filter(obj => obj.rideable);
         this.selectObject = InputHelpers.makeSelect(rideable.map(ob => ob.name), this.div);
-        this.selectObject.onchange = function() {
-            _world.setActiveObject(this.value);
-        }
 
-        this.selectObject.onchange(null); // call to set initial selection
         // create "view solo" checkbox.
         this.selectionChkList = InputHelpers.makeFlexDiv(this.div);
         /**@type HTMLInputElement */
@@ -76,6 +72,15 @@ export class WorldUI {
             _world.setViewMode(this.value);
         }
         this.selectViewMode.onchange(null);
+
+        this.selectObject.onchange = function() {
+            _world.setActiveObject(this.value);
+            _world.setViewMode("Drive Object");
+            self.selectViewMode.value = "Drive Object";
+        }
+        // don't set initial selection because we don't want to begin in drive mode
+        //this.selectObject.onchange(null); // call to set initial selection
+
         this.update(); 
     }
     update() {
