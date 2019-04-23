@@ -175,9 +175,10 @@ export class GrObject {
         let y = (bbox.max.y+bbox.min.y)/2;
         let z = (bbox.max.z+bbox.min.z)/2;
 
-        let dx = (bbox.max.x-x);
-        let dy = (bbox.max.y-y);
-        let dz = (bbox.max.z-z);
+        // make the box a little bigger to deal with think/small objects
+        let dx = (bbox.max.x-x) + .05;
+        let dy = (bbox.max.y-y) + .05;
+        let dz = (bbox.max.z-z) + .05;
 
         let d = Math.max(dx,dy,dz);
 
