@@ -44,7 +44,6 @@ T = THREE;
  * @property [width] - canvas size 
  * @property [height] - canvas size
  * @property [where] - where in the DOM to insert things
- * @property [controls] - whether or not to make orbit controls (default is only if we make the camera)
  * @property [lights] - a list of lights, or else default ones are made
  * @property [lightBrightness=.75] - brightness of the default lights
  * @property [lightColoring="cool-to-warm"] - either "c"ool-to-warm, "w"hite, or e"x"treme
@@ -157,76 +156,79 @@ export class GrWorld {
             this.camera.lookAt(lookat);
             this.camera.name = "World Camera";
         }
+        this.active_camera = this.camera;
         // create a camera for viewing a solo object.
         // This isn't something the user should worry about, so values are set directly.
         this.solo_camera = new T.PerspectiveCamera( 45, width/height, 0.1, 2000 );
         this.solo_camera.name = "Solo Camera";
         this.solo_camera.position.set(1, 1, 1);
-        this.active_camera = this.camera;
 
-        // if we either made the camera or controls are specified...
-        this.orbit_controls = (!("camera" in params) || ("controls" in params)) ?
-            new T.OrbitControls(this.active_camera,this.renderer.domElement) : undefined;
-        this.orbit_controls.keys = {UP: 87, BOTTOM: 83, LEFT: 65, RIGHT: 68};
-        // For some reason, this version of three is missing the saveState method.
-        // Hack in something here to at least save something.
-        let orbitSaveState = function() {
-            this.position0 = new T.Vector3(this.object.position.x, this.object.position.y, this.object.position.z);
-            this.target0   = this.target;
-        };
-        let orbitReset = function() {
-            this.object.position.set(this.position0.x, this.position0.y, this.position0.z);
-            this.target   = this.target0;
-            this.update();
-        };
-        // @ts-ignore - we are adding the save state function
-        this.orbit_controls.saveState = orbitSaveState;
-        this.orbit_controls.reset = orbitReset;
-        // We also want a pointer to active set of controls.
-        this.active_controls = this.orbit_controls;
-
-        if (T.FlyControls) {
-            this.fly_controls = new T.FlyControls(this.active_camera, this.renderer.domElement);
-            this.fly_controls.dragToLook = true;
-            this.fly_controls.rollSpeed = 0.1;
-            this.fly_controls.dispose();
-            let flySaveState = function() {
-                this.position0 = new T.Vector3(this.object.position.x, this.object.position.y, this.object.position.z);
-            };
-            let flyReset = function() {
-                if (this.position0)
-                {
+        // make the controls
+        if (this.active_camera.isPerspectiveCamera) {
+            if (T.OrbitControls) {
+                this.orbit_controls =  new T.OrbitControls(this.active_camera,this.renderer.domElement);
+                this.orbit_controls.keys = {UP: 87, BOTTOM: 83, LEFT: 65, RIGHT: 68};
+                // For some reason, this version of three is missing the saveState method.
+                // Hack in something here to at least save something.
+                let orbitSaveState = function() {
+                    this.position0 = new T.Vector3(this.object.position.x, this.object.position.y, this.object.position.z);
+                    this.target0   = this.target;
+                };
+                let orbitReset = function() {
                     this.object.position.set(this.position0.x, this.position0.y, this.position0.z);
-                }
-                this.update(0.1);
-            };
-            let register = function() {
-                function bind( scope, fn ) {
-                    return function () {
-                        fn.apply( scope, arguments );
-                    };
-                }
-                this.domElement.addEventListener( 'mousemove', bind(this, this.mousemove), false );
-                this.domElement.addEventListener( 'mousedown', bind(this, this.mousedown), false );
-                this.domElement.addEventListener( 'mouseup', bind(this, this.mouseup), false );
-
-                window.addEventListener( 'keydown', bind(this, this.keydown), false );
-                window.addEventListener( 'keyup', bind(this, this.keyup), false );
-            };
-            if (!this.fly_controls.saveState)
-            {
-                this.fly_controls.saveState = flySaveState;
-                this.fly_controls.reset = flyReset;
+                    this.target   = this.target0;
+                    this.update();
+                };
+                // @ts-ignore - we are adding the save state function
+                this.orbit_controls.saveState = orbitSaveState;
+                this.orbit_controls.reset = orbitReset;
+                // We also want a pointer to active set of controls.
+                this.active_controls = this.orbit_controls;
+            } else {
+                console.warn("No Orbit Controls in GrWorld! (missing T.OrbitControls from HTML)");
             }
-            if (!this.fly_controls.register)
-            {
-                this.fly_controls.register = register;
-            }
-        } else {
-            console.warn("No FlyControls (FlyControls not in HTML)");
-            this.fly_controls = undefined;
-        }
+            if (T.FlyControls) {
+                this.fly_controls = new T.FlyControls(this.active_camera, this.renderer.domElement);
+                this.fly_controls.dragToLook = true;
+                this.fly_controls.rollSpeed = 0.1;
+                this.fly_controls.dispose();
+                let flySaveState = function() {
+                    this.position0 = new T.Vector3(this.object.position.x, this.object.position.y, this.object.position.z);
+                };
+                let flyReset = function() {
+                    if (this.position0)
+                    {
+                        this.object.position.set(this.position0.x, this.position0.y, this.position0.z);
+                    }
+                    this.update(0.1);
+                };
+                let register = function() {
+                    function bind( scope, fn ) {
+                        return function () {
+                            fn.apply( scope, arguments );
+                        };
+                    }
+                    this.domElement.addEventListener( 'mousemove', bind(this, this.mousemove), false );
+                    this.domElement.addEventListener( 'mousedown', bind(this, this.mousedown), false );
+                    this.domElement.addEventListener( 'mouseup', bind(this, this.mouseup), false );
 
+                    window.addEventListener( 'keydown', bind(this, this.keydown), false );
+                    window.addEventListener( 'keyup', bind(this, this.keyup), false );
+                };
+                if (!this.fly_controls.saveState)
+                {
+                    this.fly_controls.saveState = flySaveState;
+                    this.fly_controls.reset = flyReset;
+                }
+                if (!this.fly_controls.register)
+                {
+                    this.fly_controls.register = register;
+                }
+            } else {
+                console.warn("No FlyControls (FlyControls not in HTML)");
+                this.fly_controls = undefined;
+            }
+        } // only make controls for PerspectiveCameras
 
         // if we either specify where things go in the DOM or we made our
         // own canvas, install it
