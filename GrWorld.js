@@ -162,56 +162,49 @@ export class GrWorld {
         this.solo_camera = new T.PerspectiveCamera( 45, width/height, 0.1, 2000 );
         this.solo_camera.name = "Solo Camera";
         this.solo_camera.position.set(1, 1, 1);
-        this.active_camera = this.camera
+        this.active_camera = this.camera;
 
         // if we either made the camera or controls are specified...
         this.orbit_controls = (!("camera" in params) || ("controls" in params)) ?
             new T.OrbitControls(this.active_camera,this.renderer.domElement) : undefined;
         this.orbit_controls.keys = {UP: 87, BOTTOM: 83, LEFT: 65, RIGHT: 68};
-        // this.orbit_controls = new T.FlyControls(this.active_camera, this.renderer.domElement);
-        if (T.FlyControls) {
-            this.fly_controls = new T.FlyControls(this.active_camera, this.renderer.domElement);
-            this.fly_controls.dragToLook = true;
-            this.fly_controls.rollSpeed = 0.1;
-            this.fly_controls.dispose();
-        } else {
-            this.fly_controls = undefined;
-        }
-        // We also want a pointer to active set of controls.
-        this.active_controls = this.orbit_controls;
-
         // For some reason, this version of three is missing the saveState method.
         // Hack in something here to at least save something.
         let orbitSaveState = function() {
             this.position0 = new T.Vector3(this.object.position.x, this.object.position.y, this.object.position.z);
             this.target0   = this.target;
-        }
+        };
         let orbitReset = function() {
             this.object.position.set(this.position0.x, this.position0.y, this.position0.z);
             this.target   = this.target0;
             this.update();
-        }
-        let flySaveState = function() {
-            this.position0 = new T.Vector3(this.object.position.x, this.object.position.y, this.object.position.z);
-        }
+        };
+        // @ts-ignore - we are adding the save state function
+        this.orbit_controls.saveState = orbitSaveState;
+        this.orbit_controls.reset = orbitReset;
+        // We also want a pointer to active set of controls.
+        this.active_controls = this.orbit_controls;
+
         if (T.FlyControls) {
+            this.fly_controls = new T.FlyControls(this.active_camera, this.renderer.domElement);
+            this.fly_controls.dragToLook = true;
+            this.fly_controls.rollSpeed = 0.1;
+            this.fly_controls.dispose();
+            let flySaveState = function() {
+                this.position0 = new T.Vector3(this.object.position.x, this.object.position.y, this.object.position.z);
+            };
             let flyReset = function() {
                 if (this.position0)
                 {
                     this.object.position.set(this.position0.x, this.position0.y, this.position0.z);
                 }
                 this.update(0.1);
-            }
-            let register = function()
-            {
+            };
+            let register = function() {
                 function bind( scope, fn ) {
-
                     return function () {
-
                         fn.apply( scope, arguments );
-
                     };
-
                 }
                 this.domElement.addEventListener( 'mousemove', bind(this, this.mousemove), false );
                 this.domElement.addEventListener( 'mousedown', bind(this, this.mousedown), false );
@@ -219,10 +212,7 @@ export class GrWorld {
 
                 window.addEventListener( 'keydown', bind(this, this.keydown), false );
                 window.addEventListener( 'keyup', bind(this, this.keyup), false );
-            }
-            // if (!this.controls.saveState)
-            {
-            }
+            };
             if (!this.fly_controls.saveState)
             {
                 this.fly_controls.saveState = flySaveState;
@@ -232,9 +222,11 @@ export class GrWorld {
             {
                 this.fly_controls.register = register;
             }
+        } else {
+            console.warn("No FlyControls (FlyControls not in HTML)");
+            this.fly_controls = undefined;
         }
-        this.orbit_controls.saveState = orbitSaveState;
-        this.orbit_controls.reset = orbitReset;
+
 
         // if we either specify where things go in the DOM or we made our
         // own canvas, install it
@@ -299,7 +291,7 @@ export class GrWorld {
         }
         // add a pair of lights to the "solo" scene as well.
         this.solo_scene.add(new T.AmbientLight(0xfffff8, 0.6));
-        this.solo_scene.add(new T.DirectionalLight(0xf8f8ff, 1.0))
+        this.solo_scene.add(new T.DirectionalLight(0xf8f8ff, 1.0));
 
         // Keep track of rendering timings
         this.lastRenderTime = 0;
@@ -309,7 +301,7 @@ export class GrWorld {
         /**@type GrObject */
         this.active_object = undefined;
         this.solo_mode = false;
-        this.view_mode = "Orbit Camera"
+        this.view_mode = "Orbit Camera";
 
         // Have a switch for turning things on and off
         /** @type {HTMLInputElement} */
@@ -327,7 +319,7 @@ export class GrWorld {
             {
                 ob.visible = true;
                 ob.children.forEach(child => {showObject(child);});
-            }
+            };
             this.active_object.objects.forEach(ob => {showObject(ob);});
             // In case we were in solo mode, put the active object back in the main scene.
             this.active_object.objects.forEach(element => {
@@ -529,7 +521,7 @@ export class GrWorld {
             {
                 ob.visible = false;
                 ob.children.forEach(child => {hideObject(child);});
-            }
+            };
             this.active_object.rideable.add(this.solo_camera);
             this.active_object.rideable.add(this.camera);
             this.camera.position.set(0,0,0);
