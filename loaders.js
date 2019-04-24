@@ -29,8 +29,8 @@ function normObject(obj, scale=1.0, center=true, ground=true) {
     let dx = box.max.x-box.min.x;
     let dy = box.max.y-box.min.y;
     let dz = box.max.z-box.min.z;
-    let size = Math.max(dx,dy,dz)
-    let s = scale/size
+    let size = Math.max(dx,dy,dz);
+    let s = scale/size;
     obj.scale.set(s,s,s);
 
     if (center) {
@@ -59,6 +59,9 @@ export class ObjGrObject extends GrObject {
      * @property {string} [params.mtl]
      * @property {Object} [params.mtloptions]
      * @property {Number} [norm] - normalize the object (make the largest dimension this value)
+     * @property {Number} [x] - initial translate for the group
+     * @property {Number} [y]
+     * @property {Number} [z]
      */
     constructor(params={}) {
         // check to make sure the libraries are loaded
@@ -107,8 +110,10 @@ export class ObjGrObject extends GrObject {
                     normObject(obj, params.norm);
                 objholder.add(obj);
             });
-
         }
+        objholder.translateX(params.x || 0);
+        objholder.translateY(params.y || 0);
+        objholder.translateZ(params.z || 0);
     }
 }
 
@@ -119,7 +124,7 @@ export class FbxGrObject extends GrObject {
      * @param {Object} [params] 
      * @property {string} params.fbx
      * @property {Number} [norm] - normalize the object (make the largest dimension this value)
-     * @property {Number} [x]
+     * @property {Number} [x] - initial translate for the group
      * @property {Number} [y]
      * @property {Number} [z]
      */
