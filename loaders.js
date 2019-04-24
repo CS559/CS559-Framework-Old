@@ -119,6 +119,9 @@ export class FbxGrObject extends GrObject {
      * @param {Object} [params] 
      * @property {string} params.fbx
      * @property {Number} [norm] - normalize the object (make the largest dimension this value)
+     * @property {Number} [x]
+     * @property {Number} [y]
+     * @property {Number} [z]
      */
     constructor(params={}) {
         if (!T.FBXLoader) {
@@ -135,5 +138,8 @@ export class FbxGrObject extends GrObject {
                 normObject(obj, params.norm);
             objholder.add(obj);
         });
+        objholder.translateX(params.x || 0);
+        objholder.translateY(params.y || 0);
+        objholder.translateZ(params.z || 0);
     }
 }
