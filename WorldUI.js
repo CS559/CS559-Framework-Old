@@ -47,13 +47,14 @@ export class WorldUI {
         this.div = InputHelpers.makeBoxDiv({width:width},where);
         InputHelpers.makeHead("World Controls",this.div,{tight:true});
         let _world = this.world;
-        // create object selector
-        this.selectObject = InputHelpers.makeSelect(world.objects.map(ob => ob.name), this.div);
-        this.selectObject.onchange = function() {
-            _world.setActiveObject(this.value);
-        }
 
-        this.selectObject.onchange(null); // call to set initial selection
+        // run control
+        this.runbutton = InputHelpers.makeCheckbox("Run",this.div);
+        world.runbutton = this.runbutton;
+        world.runbutton.checked = true;
+        this.runslider = new InputHelpers.LabelSlider("speed",{width:250,min:.1,max:3,step:.1,initial:1,where:this.div});
+        world.speedcontrol = this.runslider.range;
+
         // create "view solo" checkbox.
         this.selectionChkList = InputHelpers.makeFlexDiv(this.div);
         /**@type HTMLInputElement */
@@ -67,30 +68,36 @@ export class WorldUI {
             _world.setViewMode(this.value);
         }
         this.selectViewMode.onchange(null);
-        this.update(); 
-    }
-    update() {
-        // let vals = this.sliders.map(sl => Number(sl.value()));
-        // this.world.update(vals);
-    }
 
-    /**
-     * 
-     * @param {number | string} param 
-     * @param {number} value 
-     */
-    set(param,value) {
-        // if (typeof(param)==='string') {
-        //     for(let i=0; i<this.world.params.length; i++) {
-        //         if (param==this.world.params[i].name) {
-        //             // this.sliders[i].set(Number(value));
-        //             return;
-        //         }
-        //     }
-        //     throw `Bad parameter ${param} to set`;
-        // } else {
-            // this.sliders[param].set(Number(value));
-        // }
-    }
+        InputHelpers.makeBreak(this.div);
 
+        // create object selector for rideable
+        InputHelpers.makeSpan("Drive:",this.div);
+        let rideable = world.objects.filter(obj => obj.rideable);
+        this.selectRideable = InputHelpers.makeSelect(rideable.map(ob => ob.name), this.div);
+        this.selectRideable.onchange = function() {
+            _world.setActiveObject(this.value);
+            _world.setViewMode("Drive Object");
+            self.selectViewMode.value = "Drive Object";
+        }
+
+        // create a selector for isolate
+        InputHelpers.makeBreak(this.div);
+        InputHelpers.makeSpan("LookAt:",this.div);
+        this.selectLook = InputHelpers.makeSelect(world.objects.map(ob => ob.name), this.div);
+        this.selectLook.onchange = function () {
+            if ((world.view_mode == "Drive Object") || (world.view_mode == "Follow Object")) {
+                _world.setViewMode("Orbit Camera");
+                self.selectViewMode.value = "Orbit Camera";
+            }
+            let name = this.value;
+            _world.setActiveObject(name);
+            let obj = _world.objects.find(ob => ob.name === name);
+            let camparams = obj.lookFromLookAt();
+            world.camera.position.set(camparams[0],camparams[1],camparams[2]);
+            let lookAt = new T.Vector3(camparams[3],camparams[4],camparams[5])
+            world.camera.lookAt(lookAt);
+            world.orbit_controls.target = new T.Vector3(camparams[3],camparams[4],camparams[5]);
+        }
+    }
 }

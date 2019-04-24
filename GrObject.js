@@ -67,8 +67,13 @@ export function paramObjFromParam(param) {
  * - update - which takes an array of paramaters and sets things accordingly
  * - advance - which moves the animation ahead a small amount
  * 
- * Note that a `GrObject` does not add itself to the scene (other things take care)
- * of that. When the object is added to the world, 
+ * 
+ * and optionally
+ * - lookfrom/lookat
+ * 
+ * Note that a `GrObject` does not add itself to the scene (other things take care
+ * of that). When the object is added to the world, it's THREE objects are added to
+ * the `Scene` (the THREE world container). 
  */
 export class GrObject {
     /**
@@ -84,11 +89,21 @@ export class GrObject {
      */
     constructor(name,objectOrObjects,paramInfo) {
         // simple declarations of defaults so we can easily identify members
-        /** @type Array<THREE.Object3D> */
+        /** @type {Array<THREE.Object3D>} */
         this.objects = [];
-        /** @type Array<Object> */
+        /** @type {Array<Object>} */
         this.params = [];
+        /** @type {String} */
         this.name = name;
+
+        /** A flag for if this object is ridable - if so, it should be a specific THREE object to
+         * parent the object to */
+        /** @type {THREE.Object3D} */
+        this.rideable = undefined;
+
+        /** the unique ID is a number (non-zero) that comes from the world - set by GrWorld.add*/
+        /** @type {Number} */
+        this.id = 0;
 
         // set up the object list
         if (Array.isArray(objectOrObjects)) {
@@ -142,7 +157,36 @@ export class GrObject {
      * @param {Array<Number>} paramValues 
      */
     update(paramValues) {
+    }
 
+    /**
+     * return a plausible lookfrom/lookat pair to look at this object
+     * this makes a guess based on the bounding box, but an object may
+     * want to override to give a better view
+     * 
+     * Returns an array of 6 numbers (lookfrom X,Y,Z, lookat X, Y, Z)
+     * 
+     * @returns {Array<Number>}
+     */
+    lookFromLookAt() {
+        let bbox = new T.Box3();
+        bbox.setFromObject(this.objects[0]);
+        let x = (bbox.max.x+bbox.min.x)/2;
+        let y = (bbox.max.y+bbox.min.y)/2;
+        let z = (bbox.max.z+bbox.min.z)/2;
+
+        // make the box a little bigger to deal with think/small objects
+        let dx = (bbox.max.x-x) + .05;
+        let dy = (bbox.max.y-y) + .05;
+        let dz = (bbox.max.z-z) + .05;
+
+        let d = Math.max(dx,dy,dz);
+
+        let fx = x + d*3;
+        let fy = y + d*3;
+        let fz = z + d*3;
+
+        return [fx,fy,fz,x,y,z];
     }
 
 }

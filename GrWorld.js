@@ -55,7 +55,8 @@ T = THREE;
  * @property [groundplanesize=5] - if we create a ground plane, how big
  * @property [lookfrom] - where to put the camera (only if we make the camera)
  * @property [lookat] - where to have the camera looking (only if we make the camera)
- * @property [runbutton] - a checkbox (HTML) to switch things on or off (can be undefined)
+ * @property {HTMLInputElement} [runbutton] - a checkbox (HTML) to switch things on or off (can be undefined)
+ * @property {HTMLInputElement} [speedcontrol] - a slider to get the speed (must be an HTML element, not a LabelSlider)
  */
 
  /** @class GrWorld
@@ -77,6 +78,13 @@ export class GrWorld {
      * @param {GrWorldProperties} params 
      */
     constructor(params={}) {
+        /** @type {Number} */
+        this.objCount = 0;
+
+        // mainly a set for checking object name legality
+        /** @type {Object} */
+        this.objNames = {};
+
         // this keeps a list of objects in the world
         /** @type Array<GrObject> */
         this.objects = [];
@@ -124,7 +132,7 @@ export class GrWorld {
         }
    
         // make a camera
-        /** @type THREE.PerspectiveCamera */
+        /** @type {THREE.PerspectiveCamera} */
         this.camera = undefined;
         if ("camera" in params) {
             this.camera = params.camera;
@@ -304,7 +312,10 @@ export class GrWorld {
         this.view_mode = "Orbit Camera"
 
         // Have a switch for turning things on and off
+        /** @type {HTMLInputElement} */
         this.runbutton = params.runbutton;
+        /** @type {HTMLInputElement} */
+        this.speedcontrol = params.speedcontrol;
     } // end of constructor
 
     restoreActiveObject()
@@ -400,36 +411,6 @@ export class GrWorld {
         this.currentStateOn();
     }
 
-    // viewActiveObject()
-    // {
-    //     // get bounding box, so we can position camera outside object geometry.
-    //     let bbox = new T.Box3();
-    //     bbox.setFromObject(this.active_object.objects[0]);
-    //     if (this.solo_mode)
-    //     {
-    //         this.active_camera.position.set(0, bbox.max.y-bbox.min.y, 1.5*bbox.max.z-bbox.min.z);
-    //     }
-    //     else
-    //     {
-    //         this.active_camera.position.set(
-    //             Math.max(1.0, (bbox.max.x+bbox.min.x)/2),
-    //             Math.max(1.0, (bbox.max.y+bbox.min.y)/2),
-    //             Math.max(3, 1.2*bbox.max.z));
-    //     }
-    //     // set controls to use whatever the active camera is, and position so it can see the active object.
-    //     let target = this.active_object.objects[0].position;
-    //     if (this.view_mode == "Orbit Camera")
-    //     {
-    //         this.orbit_controls.target = target;
-    //         this.orbit_controls.update();
-    //     }
-    //     else if (this.view_mode != "Drive Object")
-    //     {
-    //         this.active_camera.lookAt(target);
-    //     }
-    //     // this.orbit_controls.update();
-    // }
-
     showSoloObject()
     {
         this.solo_mode = true;
@@ -447,9 +428,13 @@ export class GrWorld {
     showWorld()
     {
         this.solo_mode = false;
-        this.active_object.objects.forEach(element => {
-            this.scene.add(element);
-        });
+        if (this.active_object) {
+            this.active_object.objects.forEach(element => {
+                this.scene.add(element);
+            });
+        } else {
+            console.warn("No active object when expecting one!");
+        }
         this.orbit_controls.object = this.camera;
         // this.orbit_controls.update();
         this.fly_controls.object = this.camera;
@@ -461,20 +446,13 @@ export class GrWorld {
     orbitControlOn()
     {
         this.orbit_controls.enabled = true;
-        if (this.solo_mode)
+        if (this.solo_mode && this.active_object)
         {
-            let bbox = new T.Box3();
-            bbox.setFromObject(this.active_object.objects[0]);
-            this.camera.position.set(
-                Math.max(1.0, (bbox.max.x+bbox.min.x)/2),
-                Math.max(1.0, (bbox.max.y+bbox.min.y)/2),
-                Math.max(3, 1.2*bbox.max.z));
-            this.solo_camera.position.set(
-                Math.max(1.0, (bbox.max.x+bbox.min.x)/2),
-                Math.max(1.0, (bbox.max.y+bbox.min.y)/2),
-                Math.max(3, 1.2*bbox.max.z));
+            let camparams = this.active_object.lookFromLookAt();
+            this.solo_camera.position.set(camparams[0],camparams[1],camparams[2]);
+            this.active_camera.lookAt(camparams[3],camparams[4],camparams[5]);
             // set controls to use whatever the active camera is, and position so it can see the active object.
-            this.orbit_controls.target = this.active_object.objects[0].position;
+            this.orbit_controls.target.set(camparams[3],camparams[4],camparams[5]);
             this.orbit_controls.update();
         }
         else
@@ -496,22 +474,11 @@ export class GrWorld {
 
     flyControlOn()
     {
-        if (this.solo_mode)
+        if (this.solo_mode && this.active_object)
         {
-            // get bounding box, so we can position camera outside object geometry.
-            let bbox = new T.Box3();
-            bbox.setFromObject(this.active_object.objects[0]);
-            this.camera.position.set(
-                Math.max(1.0, (bbox.max.x+bbox.min.x)/2),
-                Math.max(1.0, (bbox.max.y+bbox.min.y)/2),
-                Math.max(3, 1.2*bbox.max.z));
-            this.solo_camera.position.set(
-                Math.max(1.0, (bbox.max.x+bbox.min.x)/2),
-                Math.max(1.0, (bbox.max.y+bbox.min.y)/2),
-                Math.max(3, 1.2*bbox.max.z));
-            // set controls to use whatever the active camera is, and position so it can see the active object.
-            let target = this.active_object.objects[0].position;
-            this.active_camera.lookAt(target);
+            let camparams = this.active_object.lookFromLookAt();
+            this.solo_camera.position.set(camparams[0],camparams[1],camparams[2]);
+            this.active_camera.lookAt(camparams[3],camparams[4],camparams[5]);
         }
         else
         {
@@ -533,16 +500,20 @@ export class GrWorld {
 
     followObjectOn()
     {
-        this.active_object.objects[0].add(this.solo_camera);
-        this.active_object.objects[0].add(this.camera);
-        let bbox = new T.Box3();
-        bbox.setFromObject(this.active_object.objects[0]);
-        this.camera.position.set(0, bbox.max.y-bbox.min.y, 1.5*(bbox.max.z-bbox.min.z));
-        this.solo_camera.position.set(0, bbox.max.y-bbox.min.y, 1.5*(bbox.max.z-bbox.min.z));
-        // Set look direction
-        let target = this.active_object.objects[0].position;
-        this.camera.lookAt(target);
-        this.solo_camera.lookAt(target);
+        if (this.active_object.rideable) {
+            this.active_object.rideable.add(this.solo_camera);
+            this.active_object.rideable.add(this.camera);
+            let bbox = new T.Box3();
+            bbox.setFromObject(this.active_object.objects[0]);
+            this.camera.position.set(0, bbox.max.y-bbox.min.y, -1.5*(bbox.max.z-bbox.min.z));
+            this.solo_camera.position.set(0, bbox.max.y-bbox.min.y, -1.5*(bbox.max.z-bbox.min.z));
+            // Set look direction
+            let target = this.active_object.objects[0].position;
+            this.camera.lookAt(target);
+            this.solo_camera.lookAt(target);
+        } else {
+            this.followObjectOff();
+        }
     }
 
     followObjectOff()
@@ -553,18 +524,22 @@ export class GrWorld {
 
     driveObjectOn()
     {
-        let hideObject = function(ob)
-        {
-            ob.visible = false;
-            ob.children.forEach(child => {hideObject(child);});
+        if (this.active_object.rideable) {
+            let hideObject = function(ob)
+            {
+                ob.visible = false;
+                ob.children.forEach(child => {hideObject(child);});
+            }
+            this.active_object.rideable.add(this.solo_camera);
+            this.active_object.rideable.add(this.camera);
+            this.camera.position.set(0,0,0);
+            this.camera.rotation.set(0,Math.PI,0);
+            this.solo_camera.position.set(0,0,0);
+            this.solo_camera.rotation.set(0,Math.PI,0);
+            this.active_object.objects.forEach(ob => {hideObject(ob);});
+        } else {
+            this.driveObjectOff();
         }
-        this.active_object.objects[0].add(this.solo_camera);
-        this.active_object.objects[0].add(this.camera);
-        this.camera.position.set(0,0,0);
-        this.camera.rotation.set(0,0,0);
-        this.solo_camera.position.set(0,0,0);
-        this.solo_camera.rotation.set(0,0,0);
-        this.active_object.objects.forEach(ob => {hideObject(ob);});
     }
 
     driveObjectOff()
@@ -574,7 +549,24 @@ export class GrWorld {
         this.solo_scene.add(this.solo_camera);
     }
 
+    /**
+     * Add an object to the world - this takes care of putting everything
+     * into the scene, as well as assigning IDs
+     * @param {GrObject} grobj 
+     */
     add(grobj) {
+        if (grobj.id) {
+            console.warn(`Adding GrObj that already has an assigned ID. Object named "${grobj.name}"`);
+        } else {
+            grobj.id = this.objCount++;
+        }
+
+        if (grobj.name in this.objNames) {
+            console.warn(`Adding GrObj with non-unique name. Object named "${grobj.name}"`);
+        } else {
+            this.objNames[grobj.name] = grobj;
+        }
+
         this.objects.push(grobj);
         // be sure to add all the objects to the scene
         grobj.objects.forEach(element => {
@@ -604,7 +596,8 @@ export class GrWorld {
     animate() {
         if (!this.runbutton || this.runbutton.checked) {
             let delta = performance.now() - this.lastRenderTime;
-            this.advance(delta,this.lastTimeOfDay);
+            let speed = this.speedcontrol ? Number(this.speedcontrol.value) : 1.0;
+            this.advance(delta * speed,this.lastTimeOfDay);
         }
         // since we're already running an animation loop, update view controls here.
         // Pass in a delta since that's what fly controls want. Orbit controls can just ignore.
