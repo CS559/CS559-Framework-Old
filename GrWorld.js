@@ -161,10 +161,14 @@ export class GrWorld {
             new T.OrbitControls(this.active_camera,this.renderer.domElement) : undefined;
         this.orbit_controls.keys = {UP: 87, BOTTOM: 83, LEFT: 65, RIGHT: 68};
         // this.orbit_controls = new T.FlyControls(this.active_camera, this.renderer.domElement);
-        this.fly_controls = new T.FlyControls(this.active_camera, this.renderer.domElement);
-        this.fly_controls.dragToLook = true;
-        this.fly_controls.rollSpeed = 0.1;
-        this.fly_controls.dispose();
+        if (T.FlyControls) {
+            this.fly_controls = new T.FlyControls(this.active_camera, this.renderer.domElement);
+            this.fly_controls.dragToLook = true;
+            this.fly_controls.rollSpeed = 0.1;
+            this.fly_controls.dispose();
+        } else {
+            this.fly_controls = undefined;
+        }
         // We also want a pointer to active set of controls.
         this.active_controls = this.orbit_controls;
 
@@ -182,45 +186,47 @@ export class GrWorld {
         let flySaveState = function() {
             this.position0 = new T.Vector3(this.object.position.x, this.object.position.y, this.object.position.z);
         }
-        let flyReset = function() {
-            if (this.position0)
+        if (T.FlyControls) {
+            let flyReset = function() {
+                if (this.position0)
+                {
+                    this.object.position.set(this.position0.x, this.position0.y, this.position0.z);
+                }
+                this.update(0.1);
+            }
+            let register = function()
             {
-                this.object.position.set(this.position0.x, this.position0.y, this.position0.z);
+                function bind( scope, fn ) {
+
+                    return function () {
+
+                        fn.apply( scope, arguments );
+
+                    };
+
+                }
+                this.domElement.addEventListener( 'mousemove', bind(this, this.mousemove), false );
+                this.domElement.addEventListener( 'mousedown', bind(this, this.mousedown), false );
+                this.domElement.addEventListener( 'mouseup', bind(this, this.mouseup), false );
+
+                window.addEventListener( 'keydown', bind(this, this.keydown), false );
+                window.addEventListener( 'keyup', bind(this, this.keyup), false );
             }
-            this.update(0.1);
-        }
-        let register = function()
-        {
-            function bind( scope, fn ) {
-
-                return function () {
-
-                    fn.apply( scope, arguments );
-
-                };
-
+            // if (!this.controls.saveState)
+            {
             }
-            this.domElement.addEventListener( 'mousemove', bind(this, this.mousemove), false );
-            this.domElement.addEventListener( 'mousedown', bind(this, this.mousedown), false );
-            this.domElement.addEventListener( 'mouseup', bind(this, this.mouseup), false );
-
-            window.addEventListener( 'keydown', bind(this, this.keydown), false );
-            window.addEventListener( 'keyup', bind(this, this.keyup), false );
+            if (!this.fly_controls.saveState)
+            {
+                this.fly_controls.saveState = flySaveState;
+                this.fly_controls.reset = flyReset;
+            }
+            if (!this.fly_controls.register)
+            {
+                this.fly_controls.register = register;
+            }
         }
-        // if (!this.controls.saveState)
-        {
-            this.orbit_controls.saveState = orbitSaveState;
-            this.orbit_controls.reset = orbitReset;
-        }
-        if (!this.fly_controls.saveState)
-        {
-            this.fly_controls.saveState = flySaveState;
-            this.fly_controls.reset = flyReset;
-        }
-        if (!this.fly_controls.register)
-        {
-            this.fly_controls.register = register;
-        }
+        this.orbit_controls.saveState = orbitSaveState;
+        this.orbit_controls.reset = orbitReset;
 
         // if we either specify where things go in the DOM or we made our
         // own canvas, install it
