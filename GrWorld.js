@@ -431,7 +431,9 @@ export class GrWorld {
         }
         this.orbit_controls.object = this.camera;
         // this.orbit_controls.update();
-        this.fly_controls.object = this.camera;
+        if (this.fly_controls) {
+            this.fly_controls.object = this.camera;
+        }
         this.active_camera = this.camera;
         this.active_scene = this.scene;
         this.currentStateOn();
