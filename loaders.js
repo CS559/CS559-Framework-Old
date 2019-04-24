@@ -62,6 +62,7 @@ export class ObjGrObject extends GrObject {
      * @property {Number} [x] - initial translate for the group
      * @property {Number} [y]
      * @property {Number} [z]
+     * @property {String} [name]
      */
     constructor(params={}) {
         // check to make sure the libraries are loaded
@@ -127,13 +128,14 @@ export class FbxGrObject extends GrObject {
      * @property {Number} [x] - initial translate for the group
      * @property {Number} [y]
      * @property {Number} [z]
+     * @property {String} [name]
      */
     constructor(params={}) {
         if (!T.FBXLoader) {
             alert("Bad HTML: No FBX Loader");
             throw "No THREE.FBXLoader";
         }
-        let name = params.name || "Objfile(UNNAMED)";
+        let name = params.name || "FBXfile(UNNAMED)";
         let objholder = new T.Group();
         super(name,objholder); 
 
