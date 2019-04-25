@@ -182,52 +182,14 @@ export class GrWorld {
                 // @ts-ignore - we are adding the save state function
                 this.orbit_controls.saveState = orbitSaveState;
                 this.orbit_controls.reset = orbitReset;
-                // We also want a pointer to active set of controls.
+                
                 this.active_controls = this.orbit_controls;
             } else {
                 console.warn("No Orbit Controls in GrWorld! (missing T.OrbitControls from HTML)");
             }
-            if (T.FlyControls) {
-                this.fly_controls = new T.FlyControls(this.active_camera, this.renderer.domElement);
-                this.fly_controls.dragToLook = true;
-                this.fly_controls.rollSpeed = 0.1;
-                this.fly_controls.dispose();
-                let flySaveState = function() {
-                    this.position0 = new T.Vector3(this.object.position.x, this.object.position.y, this.object.position.z);
-                };
-                let flyReset = function() {
-                    if (this.position0)
-                    {
-                        this.object.position.set(this.position0.x, this.position0.y, this.position0.z);
-                    }
-                    this.update(0.1);
-                };
-                let register = function() {
-                    function bind( scope, fn ) {
-                        return function () {
-                            fn.apply( scope, arguments );
-                        };
-                    }
-                    this.domElement.addEventListener( 'mousemove', bind(this, this.mousemove), false );
-                    this.domElement.addEventListener( 'mousedown', bind(this, this.mousedown), false );
-                    this.domElement.addEventListener( 'mouseup', bind(this, this.mouseup), false );
-
-                    window.addEventListener( 'keydown', bind(this, this.keydown), false );
-                    window.addEventListener( 'keyup', bind(this, this.keyup), false );
-                };
-                if (!this.fly_controls.saveState)
-                {
-                    this.fly_controls.saveState = flySaveState;
-                    this.fly_controls.reset = flyReset;
-                }
-                if (!this.fly_controls.register)
-                {
-                    this.fly_controls.register = register;
-                }
-            } else {
-                console.warn("No FlyControls (FlyControls not in HTML)");
-                this.fly_controls = undefined;
-            }
+                this.fly_controls = null;
+                // We also want a pointer to active set of controls.
+                this.active_controls = null;
         } // only make controls for PerspectiveCameras
 
         // if we either specify where things go in the DOM or we made our
@@ -302,8 +264,6 @@ export class GrWorld {
         // Track the "active" object, which we may follow, view solo, etc.
         /**@type GrObject */
         this.active_object = undefined;
-        this.solo_mode = false;
-        this.view_mode = "Orbit Camera";
 
         // Have a switch for turning things on and off
         /** @type {HTMLInputElement} */
@@ -312,238 +272,6 @@ export class GrWorld {
         this.speedcontrol = params.speedcontrol;
     } // end of constructor
 
-    restoreActiveObject()
-    {
-        if (this.active_object)
-        {
-            // In case we were in drive mode, make the active object visible.
-            let showObject = function(ob)
-            {
-                ob.visible = true;
-                ob.children.forEach(child => {showObject(child);});
-            };
-            this.active_object.objects.forEach(ob => {showObject(ob);});
-            // In case we were in solo mode, put the active object back in the main scene.
-            this.active_object.objects.forEach(element => {
-                this.scene.add(element);
-            });
-        }
-    }
-
-    setActiveObject(name)
-    {
-        // Restore the previous object before setting a new one.
-        this.restoreActiveObject();
-        // We assume each object has a unique name to search on.
-        this.active_object = this.objects.find(ob => ob.name === name);
-        // In case we are already in an object-centric mode, focus on the new active object.
-        this.currentStateOn();
-        if (this.solo_mode)
-        {
-            this.showSoloObject();
-        }
-    }
-
-    currentStateOff()
-    {
-        switch (this.view_mode) {
-            case "Orbit Camera":
-                this.orbitControlOff();
-                break;
-            case "Fly Camera":
-                this.flyControlOff();
-                break;
-            case "Follow Object":
-                this.followObjectOff();
-                break;
-            case "Drive Object":
-                this.driveObjectOff();
-                break;
-            default:
-                break;
-        }
-    }
-
-    currentStateOn()
-    {
-        switch (this.view_mode) {
-            case "Orbit Camera":
-                this.orbitControlOn();
-                break;
-            case "Fly Camera":
-                this.flyControlOn();
-                break;
-            case "Follow Object":
-                this.followObjectOn();
-                break;
-            case "Drive Object":
-                this.driveObjectOn();
-                break;
-            default:
-                break;
-        }
-    }
-
-    setViewMode(mode)
-    {
-        // first, turn off old mode.
-        if (this.active_object)
-        {
-            this.restoreActiveObject();
-        }
-        this.currentStateOff();
-        // then, turn on new mode.
-        this.view_mode = mode;
-        if (this.solo_mode)
-        {
-            this.showSoloObject();
-        }
-        else
-        {
-            this.showWorld();
-        }
-        this.currentStateOn();
-    }
-
-    showSoloObject()
-    {
-        this.solo_mode = true;
-        // put active object in solo scene, and render the solo scene.
-        this.active_object.objects.forEach(element => {
-            this.solo_scene.add(element);
-        });
-        this.orbit_controls.object = this.solo_camera;
-        this.fly_controls.object = this.solo_camera;
-        this.active_camera = this.solo_camera;
-        this.active_scene = this.solo_scene;
-        this.currentStateOn();
-    }
-
-    showWorld()
-    {
-        this.solo_mode = false;
-        if (this.active_object) {
-            this.active_object.objects.forEach(element => {
-                this.scene.add(element);
-            });
-        } else {
-            console.warn("No active object when expecting one!");
-        }
-        this.orbit_controls.object = this.camera;
-        // this.orbit_controls.update();
-        if (this.fly_controls) {
-            this.fly_controls.object = this.camera;
-        }
-        this.active_camera = this.camera;
-        this.active_scene = this.scene;
-        this.currentStateOn();
-    }
-
-    orbitControlOn()
-    {
-        this.orbit_controls.enabled = true;
-        if (this.solo_mode && this.active_object)
-        {
-            let camparams = this.active_object.lookFromLookAt();
-            this.solo_camera.position.set(camparams[0],camparams[1],camparams[2]);
-            this.active_camera.lookAt(camparams[3],camparams[4],camparams[5]);
-            // set controls to use whatever the active camera is, and position so it can see the active object.
-            this.orbit_controls.target.set(camparams[3],camparams[4],camparams[5]);
-            this.orbit_controls.update();
-        }
-        else
-        {
-            // @ts-ignore
-            this.orbit_controls.reset();
-        }
-    }
-
-    orbitControlOff()
-    {
-        if (!this.solo_mode)
-        {
-            // @ts-ignore
-            this.orbit_controls.saveState();
-        }
-        this.orbit_controls.enabled = false;
-    }
-
-    flyControlOn()
-    {
-        if (this.solo_mode && this.active_object)
-        {
-            let camparams = this.active_object.lookFromLookAt();
-            this.solo_camera.position.set(camparams[0],camparams[1],camparams[2]);
-            this.active_camera.lookAt(camparams[3],camparams[4],camparams[5]);
-        }
-        else
-        {
-            // @ts-ignore
-            this.fly_controls.reset();
-        }
-        this.fly_controls.register();
-    }
-
-    flyControlOff()
-    {
-        if (!this.solo_mode)
-        {
-            // @ts-ignore
-            this.fly_controls.saveState();
-        }
-        this.fly_controls.dispose();
-    }
-
-    followObjectOn()
-    {
-        if (this.active_object.rideable) {
-            this.active_object.rideable.add(this.solo_camera);
-            this.active_object.rideable.add(this.camera);
-            let bbox = new T.Box3();
-            bbox.setFromObject(this.active_object.objects[0]);
-            this.camera.position.set(0, bbox.max.y-bbox.min.y, -1.5*(bbox.max.z-bbox.min.z));
-            this.solo_camera.position.set(0, bbox.max.y-bbox.min.y, -1.5*(bbox.max.z-bbox.min.z));
-            // Set look direction
-            let target = this.active_object.objects[0].position;
-            this.camera.lookAt(target);
-            this.solo_camera.lookAt(target);
-        } else {
-            this.followObjectOff();
-        }
-    }
-
-    followObjectOff()
-    {
-        this.scene.add(this.camera);
-        this.solo_scene.add(this.solo_camera);
-    }
-
-    driveObjectOn()
-    {
-        if (this.active_object.rideable) {
-            let hideObject = function(ob)
-            {
-                ob.visible = false;
-                ob.children.forEach(child => {hideObject(child);});
-            };
-            this.active_object.rideable.add(this.solo_camera);
-            this.active_object.rideable.add(this.camera);
-            this.camera.position.set(0,0,0);
-            this.camera.rotation.set(0,Math.PI,0);
-            this.solo_camera.position.set(0,0,0);
-            this.solo_camera.rotation.set(0,Math.PI,0);
-            this.active_object.objects.forEach(ob => {hideObject(ob);});
-        } else {
-            this.driveObjectOff();
-        }
-    }
-
-    driveObjectOff()
-    {
-        this.restoreActiveObject();
-        this.scene.add(this.camera);
-        this.solo_scene.add(this.solo_camera);
-    }
 
     /**
      * Add an object to the world - this takes care of putting everything
@@ -597,13 +325,9 @@ export class GrWorld {
         }
         // since we're already running an animation loop, update view controls here.
         // Pass in a delta since that's what fly controls want. Orbit controls can just ignore.
-        if (this.view_mode == "Orbit Camera")
+        if (this.active_controls)
         {
-            this.orbit_controls.update();
-        }
-        else if (this.view_mode == "Fly Camera")
-        {
-            this.fly_controls.update(0.1);
+            this.active_controls.update(0.1);
         }
         this.draw();
     }
