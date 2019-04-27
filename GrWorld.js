@@ -327,6 +327,7 @@ export class GrWorld {
         // Pass in a delta since that's what fly controls want. Orbit controls can just ignore.
         if (this.active_controls)
         {
+            // @ts-ignore       // this is an error since the argument is sometimes ignored
             this.active_controls.update(0.1);
         }
         this.draw();
