@@ -13,19 +13,7 @@
 
 // we need to have the BaseClass definition
 import { GrObject } from "./GrObject.js";
-
-// a global variable to keep track of how many objects we create
-// this allows us to give unique names
-let testobjsctr = 0;
-
-// these four lines fake out TypeScript into thinking that THREE
-// has the same type as the T.js module, so things work for type checking
-// type inferencing figures out that THREE has the same type as T
-// and then I have to use T (not THREE) to avoid the "UMD Module" warning
-/**  @type typeof import("./../THREE/threets/index"); */
-let T;
-// @ts-ignore
-T = THREE;
+import * as T from "./../THREE/src/Three";
 
 function degreesToRadians(deg) {
     return deg * Math.PI / 180;

@@ -5,12 +5,7 @@
 // and then I have to use T (not THREE) to avoid the "UMD Module" warning
 
 import {GrWorld} from "./GrWorld.js";
-
-/**  @type typeof import("./../THREE/threets/index"); */
-let T;
-// @ts-ignore
-T = THREE;
-
+import * as T from "./../THREE/src/Three";
 
  /** @class WorldController
   * 

@@ -16,14 +16,7 @@
  * ends up getting compiled before the vertex shader.
  */
 
-// these four lines fake out TypeScript into thinking that THREE
-// has the same type as the T.js module, so things work for type checking
-// type inferencing figures out that THREE has the same type as T
-// and then I have to use T (not THREE) to avoid the "UMD Module" warning
-/**  @type typeof import("./../THREE/threets/index"); */
-let THREEmod;
-// @ts-ignore
-THREEmod=THREE;
+import * as T from "./../THREE/src/Three";
 
 // this takes an object that describes a shader material and adds the
 // shader code (if provided) to it.

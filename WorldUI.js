@@ -15,15 +15,7 @@ import { GrObject } from "./GrObject.js";
 import * as InputHelpers from "../Libs/inputHelpers.js";
 import { GrWorld } from "./GrWorld.js";
 import { WorldController } from "./WorldController.js";
-
-// these four lines fake out TypeScript into thinking that THREE
-// has the same type as the T.js module, so things work for type checking
-// type inferencing figures out that THREE has the same type as T
-// and then I have to use T (not THREE) to avoid the "UMD Module" warning
-/**  @type typeof import("../../Workbook08-Workspace/THREE/threets/index"); */
-let T;
-// @ts-ignore
-T = THREE;
+import * as T from "./../THREE/src/Three";
 
 export class WorldUI {
     /**
