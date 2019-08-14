@@ -45,7 +45,7 @@ export class GrCube extends GrObject {
         } else {
             material = new T.MeshStandardMaterial( {color: "#FF8888"});
         }
-        let geom = new T.CubeGeometry(params.size,params.size,params.size);
+        let geom = new T.BoxGeometry(params.size,params.size,params.size);
         let mesh = new T.Mesh(geom, material);
         // note that we have to make the Object3D before we can call
         // super and we have to call super before we can use this

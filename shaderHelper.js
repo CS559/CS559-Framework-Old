@@ -47,7 +47,7 @@ const errorFragmentShader = `
  */
 function loadFragmentShader(url,material)
 {
-    let loader = new THREEmod.FileLoader();
+    let loader = new T.FileLoader();
     loader.load(url,
             /* onload = */ function(data) {
                 material.fragmentShader = data.toString();
@@ -71,7 +71,7 @@ function loadFragmentShader(url,material)
  */
 function loadVertexShader(url,material)
 {
-    let loader = new THREEmod.FileLoader();
+    let loader = new T.FileLoader();
     loader.load(url,
             /* onload = */ function(data) {
                 material.vertexShader = data.toString();
@@ -102,7 +102,7 @@ export function shaderMaterial(vertexShaderURL, fragmentShaderURL, properties={}
 {
     if (!properties) properties = {};
 
-    let sm = new THREEmod.ShaderMaterial(properties);
+    let sm = new T.ShaderMaterial(properties);
     // create a default shader until the real ones load
     sm.vertexShader = defaultVertexShader;
     sm.fragmentShader = defaultFragmentShader;

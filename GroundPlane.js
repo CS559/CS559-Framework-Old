@@ -56,7 +56,7 @@ export class SimpleGroundPlane extends GrObject {
     }
 
     // animation doesn't do anything, but we have it anyway
-    advance(delta, timeOfDay) {
+    tick(delta, timeOfDay) {
         // just sits there
     }
 

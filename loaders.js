@@ -7,6 +7,9 @@
 
 import * as T from "./../THREE/src/Three.js";
 import {GrObject} from "./GrObject.js";
+import { MTLLoader } from "./../THREE/examples/jsm/loaders/MTLLoader.js";
+import { OBJLoader } from "./../THREE/examples/jsm/loaders/OBJLoader.js";
+import { FBXLoader } from "./../THREE/examples/jsm/loaders/FBXLoader.js";
 
 /**
  * Rescale an object - assumes that the object is a group with 1 mesh in it
@@ -57,15 +60,6 @@ export class ObjGrObject extends GrObject {
      * @property {String} [name]
      */
     constructor(params={}) {
-        // check to make sure the libraries are loaded
-        if (!T.MTLLoader) {
-            alert("Bad HTML: No THREE.MTLLoader");
-            throw "No THREE.MTLLoader";
-        }
-        if (!T.OBJLoader) {
-            alert("Bad HTML: No THREE.ObjLoader2");
-            throw "No THREE.ObjLoader";
-        }
 
         if (!params.obj) {
             alert("Bad OBJ object - no obj file given!");
@@ -79,7 +73,7 @@ export class ObjGrObject extends GrObject {
 
         // if there is a material, load it first, and then have that load the OBJ file
         if (params.mtl) {
-            let mtloader = new T.MTLLoader();
+            let mtloader = new MTLLoader();
             if (params.mtloptions) {
                 mtloader.setMaterialOptions(params.mtloptions);
             }
@@ -87,7 +81,7 @@ export class ObjGrObject extends GrObject {
             // note that the callback then calls the Obj Loader
             mtloader.load(params.mtl, function(myMaterialCreator) {
                 myMaterialCreator.preload();
-                let objLoader = new T.OBJLoader();
+                let objLoader = new OBJLoader();
                 objLoader.setMaterials(myMaterialCreator);
                 objLoader.load(params.obj,function(obj) {
                     if (params.norm)
@@ -97,7 +91,7 @@ export class ObjGrObject extends GrObject {
             });
 
         } else {    // no material file, just an obj
-            let objLoader = new T.OBJLoader();
+            let objLoader = new OBJLoader();
             objLoader.load(params.obj,function(obj) {
                 if (params.norm)
                     normObject(obj, params.norm);
@@ -123,15 +117,11 @@ export class FbxGrObject extends GrObject {
      * @property {String} [name]
      */
     constructor(params={}) {
-        if (!T.FBXLoader) {
-            alert("Bad HTML: No FBX Loader");
-            throw "No THREE.FBXLoader";
-        }
         let name = params.name || "FBXfile(UNNAMED)";
         let objholder = new T.Group();
         super(name,objholder); 
 
-        let fbx = new T.FBXLoader();
+        let fbx = new FBXLoader();
         fbx.load(params.fbx, function(obj) {
             if (params.norm)
                 normObject(obj, params.norm);

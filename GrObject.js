@@ -58,7 +58,7 @@ export function paramObjFromParam(param) {
  * - construction - the constructor needs to call the base class constructor
  *      and provide the parameters and geometry
  * - update - which takes an array of paramaters and sets things accordingly
- * - advance - which moves the animation ahead a small amount
+ * - tick - which moves the animation ahead a small amount
  * 
  * 
  * and optionally
@@ -127,9 +127,9 @@ export class GrObject {
 
     // methods that must be over-ridden
     /**
-     * Advance the object by an amount of time. Time only flows forward
-     * so use this to figure out how fast things should move.
-     * In theory, it is always a "step" (1/60th of a second)
+     * Next tick of the clock: Advance the object by an amount of time.
+     * Time only flows forward so use this to figure out how fast things
+     * should move. In theory, it is always a "step" (1/60th of a second)
      * In the past, so many things were stochastic and only computed the
      * delta, that this became the norm (if you need to accumulate time
      * you can sum the delta)
@@ -139,7 +139,7 @@ export class GrObject {
      * @param {number} delta 
      * @param {number} timeOfDay
      */
-    advance(delta, timeOfDay) {
+    tick(delta, timeOfDay) {
         // by default (base class), does nothing
 
     }

@@ -22,6 +22,7 @@ import { GrObject } from "./GrObject.js";
 import { insertElement } from "../Libs/inputHelpers.js";
 import { SimpleGroundPlane } from "./GroundPlane.js";
 import * as T from "./../THREE/src/Three.js";
+import { OrbitControls } from "./../THREE/examples/jsm/controls/OrbitControls.js";
 
 /**
  * Document the parameters for making a world - all are optional
@@ -157,31 +158,28 @@ export class GrWorld {
 
         // make the controls
         if (this.active_camera.isPerspectiveCamera) {
-            if (T.OrbitControls) {
-                this.orbit_controls =  new T.OrbitControls(this.active_camera,this.renderer.domElement);
-                this.orbit_controls.keys = {UP: 87, BOTTOM: 83, LEFT: 65, RIGHT: 68};
-                // For some reason, this version of three is missing the saveState method.
-                // Hack in something here to at least save something.
-                let orbitSaveState = function() {
-                    this.position0 = new T.Vector3(this.object.position.x, this.object.position.y, this.object.position.z);
-                    this.target0   = this.target;
-                };
-                let orbitReset = function() {
-                    this.object.position.set(this.position0.x, this.position0.y, this.position0.z);
-                    this.target   = this.target0;
-                    this.update();
-                };
-                // @ts-ignore - we are adding the save state function
-                this.orbit_controls.saveState = orbitSaveState;
-                this.orbit_controls.reset = orbitReset;
-                
-                this.active_controls = this.orbit_controls;
-            } else {
-                console.warn("No Orbit Controls in GrWorld! (missing T.OrbitControls from HTML)");
-            }
-                this.fly_controls = null;
-                // We also want a pointer to active set of controls.
-                this.active_controls = null;
+            this.orbit_controls =  new OrbitControls(this.active_camera,this.renderer.domElement);
+            this.orbit_controls.keys = {UP: 87, BOTTOM: 83, LEFT: 65, RIGHT: 68};
+            // For some reason, this version of three is missing the saveState method.
+            // Hack in something here to at least save something.
+            let orbitSaveState = function() {
+                this.position0 = new T.Vector3(this.object.position.x, this.object.position.y, this.object.position.z);
+                this.target0   = this.target;
+            };
+            let orbitReset = function() {
+                this.object.position.set(this.position0.x, this.position0.y, this.position0.z);
+                this.target   = this.target0;
+                this.update();
+            };
+            // @ts-ignore - we are adding the save state function
+            this.orbit_controls.saveState = orbitSaveState;
+            this.orbit_controls.reset = orbitReset;
+            
+            this.active_controls = this.orbit_controls;
+            
+            this.fly_controls = null;
+            // We also want a pointer to active set of controls.
+            this.active_controls = null;
         } // only make controls for PerspectiveCameras
 
         // if we either specify where things go in the DOM or we made our
@@ -299,10 +297,10 @@ export class GrWorld {
     }
 
     /**
-     * advance all of the objects
+     * next tick of the clock: advance all of the objects
      */
-    advance(delta, timeOfDay) {
-        this.objects.forEach(obj => obj.advance(delta,timeOfDay));
+    tick(delta, timeOfDay) {
+        this.objects.forEach(obj => obj.tick(delta,timeOfDay));
     }
 
     /**
@@ -313,7 +311,7 @@ export class GrWorld {
         if (!this.runbutton || this.runbutton.checked) {
             let delta = performance.now() - this.lastRenderTime;
             let speed = this.speedcontrol ? Number(this.speedcontrol.value) : 1.0;
-            this.advance(delta * speed,this.lastTimeOfDay);
+            this.tick(delta * speed,this.lastTimeOfDay);
         }
         // since we're already running an animation loop, update view controls here.
         // Pass in a delta since that's what fly controls want. Orbit controls can just ignore.

@@ -21,10 +21,10 @@ import { GrObject } from "./GrObject.js";
  */
 export function spinY(grobj, speed) {
     let newSpeed = speed ? speed : 0.001;
-    let oldAdvance = grobj.advance;
-    grobj.advance = function(delta,timeOfDay) {
+    let oldTick = grobj.tick;
+    grobj.tick = function(delta,timeOfDay) {
         this.objects.forEach(obj => obj.rotateY(newSpeed * delta));
-        oldAdvance.call(this,delta,timeOfDay);
+        oldTick.call(this,delta,timeOfDay);
     };
     return grobj;
 }
