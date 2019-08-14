@@ -5,7 +5,7 @@
  * Access to THREE's loaders within the CS559 framework
  */
 
-import * as T from "./../THREE/src/Three";
+import * as T from "./../THREE/src/Three.js";
 import {GrObject} from "./GrObject.js";
 
 /**

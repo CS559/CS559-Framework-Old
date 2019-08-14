@@ -15,7 +15,7 @@ import { GrObject } from "./GrObject.js";
 import * as InputHelpers from "../Libs/inputHelpers.js";
 import { GrWorld } from "./GrWorld.js";
 import { WorldController } from "./WorldController.js";
-import * as T from "./../THREE/src/Three";
+import * as T from "./../THREE/src/Three.js";
 
 export class WorldUI {
     /**

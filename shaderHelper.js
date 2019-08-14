@@ -16,7 +16,7 @@
  * ends up getting compiled before the vertex shader.
  */
 
-import * as T from "./../THREE/src/Three";
+import * as T from "./../THREE/src/Three.js";
 
 // this takes an object that describes a shader material and adds the
 // shader code (if provided) to it.

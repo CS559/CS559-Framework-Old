@@ -5,7 +5,7 @@
 // and then I have to use T (not THREE) to avoid the "UMD Module" warning
 
 import {GrWorld} from "./GrWorld.js";
-import * as T from "./../THREE/src/Three";
+import * as T from "./../THREE/src/Three.js";
 
  /** @class WorldController
   * 

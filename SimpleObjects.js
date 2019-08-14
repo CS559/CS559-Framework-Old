@@ -14,7 +14,7 @@
 
 // we need to have the BaseClass definition
 import { GrObject } from "./GrObject.js";
-import * as T from "./../THREE/src/Three";
+import * as T from "./../THREE/src/Three.js";
 
 let simpleObjectCounter = 0;
 

@@ -21,7 +21,7 @@
 import { GrObject } from "./GrObject.js";
 import { insertElement } from "../Libs/inputHelpers.js";
 import { SimpleGroundPlane } from "./GroundPlane.js";
-import * as T from "./../THREE/src/Three";
+import * as T from "./../THREE/src/Three.js";
 
 /**
  * Document the parameters for making a world - all are optional

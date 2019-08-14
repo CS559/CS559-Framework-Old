@@ -16,7 +16,7 @@
  * the class `GrObject` defined here.
  */
 
-import * as T from "./../THREE/src/Three";
+import * as T from "./../THREE/src/Three.js";
 
 /**
  * This function converts from the specifications given to the `GrObject`
