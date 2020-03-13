@@ -8,7 +8,7 @@
  * 
  *  */
 
-import * as T from "./../THREE/src/Three.js";
+import * as T from "../THREE/src/Three.js";
 
 /** @module SimpleBehaviors */
 

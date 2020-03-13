@@ -13,7 +13,12 @@
 
 // we need to have the BaseClass definition
 import { GrObject } from "./GrObject.js";
-import * as T from "./../THREE/src/Three.js";
+
+// a global variable to keep track of how many objects we create
+// this allows us to give unique names
+let testobjsctr = 0;
+
+import * as T from "../THREE/src/Three.js";
 
 function degreesToRadians(deg) {
     return deg * Math.PI / 180;

@@ -16,7 +16,7 @@
  * the class `GrObject` defined here.
  */
 
-import * as T from "./../THREE/src/Three.js";
+import * as T from "../THREE/src/Three.js";
 
 /**
  * This function converts from the specifications given to the `GrObject`
@@ -127,9 +127,9 @@ export class GrObject {
 
     // methods that must be over-ridden
     /**
-     * Next tick of the clock: Advance the object by an amount of time.
-     * Time only flows forward so use this to figure out how fast things
-     * should move. In theory, it is always a "step" (1/60th of a second)
+     * Advance the object by an amount of time. Time only flows forward
+     * so use this to figure out how fast things should move.
+     * In theory, it is always a "step" (1/60th of a second)
      * In the past, so many things were stochastic and only computed the
      * delta, that this became the norm (if you need to accumulate time
      * you can sum the delta)

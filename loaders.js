@@ -5,11 +5,11 @@
  * Access to THREE's loaders within the CS559 framework
  */
 
-import * as T from "./../THREE/src/Three.js";
-import {GrObject} from "./GrObject.js";
-import { MTLLoader } from "./../THREE/examples/jsm/loaders/MTLLoader.js";
-import { OBJLoader } from "./../THREE/examples/jsm/loaders/OBJLoader.js";
-import { FBXLoader } from "./../THREE/examples/jsm/loaders/FBXLoader.js";
+import * as T from "../THREE/src/Three.js";
+import { GrObject } from "./GrObject.js";
+import { FBXLoader } from "../THREE/examples/jsm/loaders/FBXLoader.js";
+import { MTLLoader } from "../THREE/examples/jsm/loaders/MTLLoader.js";
+import { OBJLoader } from "../THREE/examples/jsm/loaders/OBJLoader.js";
 
 /**
  * Rescale an object - assumes that the object is a group with 1 mesh in it

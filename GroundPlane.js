@@ -15,11 +15,12 @@
 
 // we need to have the BaseClass definition
 import { GrObject } from "./GrObject.js";
-import * as T from "./../THREE/src/Three.js";
 
 // a global variable to keep track of how many objects we create
 // this allows us to give unique names
 let numberOfGrounds = 0;
+
+import * as T from "../THREE/src/Three.js";
 
 /**
  * This is the simplest - just a solid grey box

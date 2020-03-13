@@ -14,8 +14,7 @@ import { GrObject } from "./GrObject.js";
 // we need to import the module to get its typedefs for the type checker
 import * as InputHelpers from "../Libs/inputHelpers.js";
 import { GrWorld } from "./GrWorld.js";
-import { WorldController } from "./WorldController.js";
-import * as T from "./../THREE/src/Three.js";
+import * as T from "../THREE/src/Three.js";
 
 export class WorldUI {
     /**
@@ -37,10 +36,9 @@ export class WorldUI {
     constructor(world,width=300,where=undefined) {
         let self=this;
         this.world = world;
-        this.controller = new WorldController(world);
         this.div = InputHelpers.makeBoxDiv({width:width},where);
         InputHelpers.makeHead("World Controls",this.div,{tight:true});
-        let _controller = this.controller;
+        let _world = this.world;
 
         // run control
         this.runbutton = InputHelpers.makeCheckbox("Run",this.div);
@@ -54,12 +52,12 @@ export class WorldUI {
         /**@type HTMLInputElement */
         this.chkSolo = InputHelpers.makeCheckbox("chkSolo", this.selectionChkList, "View Solo Object");
         this.chkSolo.onclick = function() {
-            if (this.checked) { _controller.showSoloObject(); }
-            else              { _controller.showWorld(); }
+            if (this.checked) { _world.showSoloObject(); }
+            else              { _world.showWorld(); }
         }
         this.selectViewMode = InputHelpers.makeSelect(["Orbit Camera", "Fly Camera", "Follow Object", "Drive Object"], this.div);
         this.selectViewMode.onchange = function() {
-            _controller.setViewMode(this.value);
+            _world.setViewMode(this.value);
         }
         this.selectViewMode.onchange(null);
 
@@ -70,8 +68,8 @@ export class WorldUI {
         let rideable = world.objects.filter(obj => obj.rideable);
         this.selectRideable = InputHelpers.makeSelect(rideable.map(ob => ob.name), this.div);
         this.selectRideable.onchange = function() {
-            _controller.setActiveObject(this.value);
-            _controller.setViewMode("Drive Object");
+            _world.setActiveObject(this.value);
+            _world.setViewMode("Drive Object");
             self.selectViewMode.value = "Drive Object";
         }
 
@@ -80,13 +78,13 @@ export class WorldUI {
         InputHelpers.makeSpan("LookAt:",this.div);
         this.selectLook = InputHelpers.makeSelect(world.objects.map(ob => ob.name), this.div);
         this.selectLook.onchange = function () {
-            if ((_controller.view_mode == "Drive Object") || (_controller.view_mode == "Follow Object")) {
-                _controller.setViewMode("Orbit Camera");
+            if ((world.view_mode == "Drive Object") || (world.view_mode == "Follow Object")) {
+                _world.setViewMode("Orbit Camera");
                 self.selectViewMode.value = "Orbit Camera";
             }
             let name = this.value;
-            _controller.setActiveObject(name);
-            let obj = _controller.world.objects.find(ob => ob.name === name);
+            _world.setActiveObject(name);
+            let obj = _world.objects.find(ob => ob.name === name);
             let camparams = obj.lookFromLookAt();
             world.camera.position.set(camparams[0],camparams[1],camparams[2]);
             let lookAt = new T.Vector3(camparams[3],camparams[4],camparams[5])
