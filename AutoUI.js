@@ -43,7 +43,8 @@ export class AutoUI {
         min: param.min,
         max: param.max,
         step: (param.max - param.min) / 30,
-        initial: param.initial
+        initial: param.initial,
+        id: object.name + "-" + param.name
       });
       return slider;
     });
