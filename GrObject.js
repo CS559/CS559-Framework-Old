@@ -6,11 +6,12 @@
  *
  * GrObject: a "thin wrapper" around Three.JS's Object3D to facilitate
  * creating UIs and doing animation
+ * 
+ * @module GrObject 
  */
 
 /* students will want to create objects that extend this class */
 
-/** @module GrObject */
 /*
  * This is the main class for the framework. Most of the work involves extending
  * the class `GrObject` defined here.
@@ -57,8 +58,9 @@ export function paramObjFromParam(param) {
   return paramObj;
 }
 
-/** @class GrObject
- *
+/** 
+ * @class GrObject
+ * 
  * GrObjects have:
  * - a name - each object should have a unique name (like an id), but this is not
  *   enforced
@@ -79,6 +81,8 @@ export function paramObjFromParam(param) {
  * Note that a `GrObject` does not add itself to the scene (other things take care
  * of that). When the object is added to the world, it's THREE objects are added to
  * the `Scene` (the THREE world container).
+ * 
+ * 
  */
 export class GrObject {
   /**

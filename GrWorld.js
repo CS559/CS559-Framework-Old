@@ -13,9 +13,8 @@
  *
  * Basically, this keeps some of the basic stuff you need when you use
  * three.
- */
-
-/** @module GrWorld */
+ * @module GrWorld 
+ * */
 
 // we need to have the BaseClass definition
 import { GrObject } from "./GrObject.js";

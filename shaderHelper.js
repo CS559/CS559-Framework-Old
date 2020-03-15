@@ -15,6 +15,8 @@
  *
  * There are potentially issues if the fragment shader
  * ends up getting compiled before the vertex shader.
+ * 
+ * @module shaderHelper
  */
 
 import * as T from "../CS559-THREE/build/three.module.js";

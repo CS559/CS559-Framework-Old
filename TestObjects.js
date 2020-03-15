@@ -7,9 +7,8 @@
  * Test Objects - these examples are for use in testing the framework
  * and are less generally useful
  *
+ * @module TestObjects 
  */
-
-/** @module TestObjects */
 
 // we need to have the BaseClass definition
 import { GrObject } from "./GrObject.js";
@@ -28,6 +27,8 @@ function degreesToRadians(deg) {
  * A simple object that is like a dump truck (with a hinge), but just made of
  * boxes.
  * A simple way to test a parametric object
+ * 
+ * It's also a simple example of a hierarchical object
  */
 export class HingeCube extends GrObject {
   constructor() {
@@ -135,7 +136,7 @@ export class BetterDelayTest extends GrObject {
 }
 
 /**
- * test for changing an object's material
+ * test for changing an object's material after some delay
  */
 export class MaterialDelayTest extends GrObject {
   constructor() {

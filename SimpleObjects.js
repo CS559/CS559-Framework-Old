@@ -1,16 +1,16 @@
 /*jshint esversion: 6 */
 // @ts-check
 
-/**
+/** 
+ * 
  * CS559 3D World Framework Code
  *
  * Simple Example Objects - they don't do much, but for convenience they
  * provide wrappers around THREE objects
  *
- *
+ * @module SimpleObjects 
  */
 
-/** @module SimpleObjects */
 
 // we need to have the BaseClass definition
 import { GrObject } from "./GrObject.js";
