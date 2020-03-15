@@ -1,16 +1,15 @@
 /*jshint esversion: 6 */
 // @ts-check
 
-/** 
- * 
+/**
+ *
  * CS559 3D World Framework Code
  *
  * Simple Example Objects - they don't do much, but for convenience they
  * provide wrappers around THREE objects
  *
- * @module SimpleObjects 
+ * @module SimpleObjects
  */
-
 
 // we need to have the BaseClass definition
 import { GrObject } from "./GrObject.js";
@@ -18,10 +17,9 @@ import * as T from "../CS559-THREE/build/three.module.js";
 
 let simpleObjectCounter = 0;
 
-
 /**
  * we pass a set of properties to a cube to allow for flexible parameters
- * 
+ *
  * @typedef CubeProperties
  * @type {object}
  * @property {THREE.Material} [material]
@@ -34,9 +32,9 @@ let simpleObjectCounter = 0;
  * @property {number} [heightSegments=6] - only for Sphere
  */
 
- /**
-  * A simple GrObject: A cube - allows for setting various parameters as parameters
-  */
+/**
+ * A simple GrObject: A cube - allows for setting various parameters as parameters
+ */
 export class GrCube extends GrObject {
   /**
    * @param {CubeProperties} params
@@ -212,22 +210,22 @@ export class GrGroup extends GrObject {
    * @param {number} [params.z]
    * @param {Array<string|Array>} [paramInfo] - parameters for the GrObject (for sliders)
    */
-    constructor(params = {}, paramInfo = []) {
-        let group = new T.Group();
+  constructor(params = {}, paramInfo = []) {
+    let group = new T.Group();
 
-        super(`Group-${simpleObjectCounter++}`, group, paramInfo);
+    super(`Group-${simpleObjectCounter++}`, group, paramInfo);
 
-        // put the object in its place
-        group.position.x = params.x ? Number(params.x) : 0;
-        group.position.y = params.y ? Number(params.y) : 0;
-        group.position.z = params.z ? Number(params.z) : 0;
-    }
-    /**
-     * Add an Object3D to the group (not a GrObject!)
-     * 
-     * @param {T.Object3D}
-     */
-    add(obj) {
-        this.objects[0].add(obj);
-    }
+    // put the object in its place
+    group.position.x = params.x ? Number(params.x) : 0;
+    group.position.y = params.y ? Number(params.y) : 0;
+    group.position.z = params.z ? Number(params.z) : 0;
+  }
+  /**
+   * Add an Object3D to the group (not a GrObject!)
+   *
+   * @param {T.Object3D} obj
+   */
+  add(obj) {
+    this.objects[0].add(obj);
+  }
 }
