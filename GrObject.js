@@ -29,7 +29,7 @@ import * as T from "../CS559-THREE/build/three.module.js";
  * @param {string|Array} param
  */
 export function paramObjFromParam(param) {
-  let paramObj = { name: "no name", min: 0, max: 1, initial: 0 };
+  let paramObj = { name: "no name", min: 0, max: 1, initial: 0, step: 0 };
   if (typeof param === "string") {
     paramObj.name = param;
   } else if (Array.isArray(param)) {
@@ -45,6 +45,9 @@ export function paramObjFromParam(param) {
     if (param.length > 3) {
       paramObj.initial = param[3];
     }
+    if (param.length > 4) {
+        paramObj.step = param[4];
+    } 
   }
   // make sure the initial value is legal
   if (paramObj.initial < paramObj.min) {

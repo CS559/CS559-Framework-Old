@@ -42,7 +42,7 @@ export class AutoUI {
         width: width - 20,
         min: param.min,
         max: param.max,
-        step: (param.max - param.min) / 30,
+        step: param.step ? param.step : ((param.max - param.min) / 30),
         initial: param.initial,
         id: object.name + "-" + param.name
       });
