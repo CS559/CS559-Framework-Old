@@ -6,16 +6,16 @@
  *
  * Simple object behaviors that work by patching the objects
  *
+ * @module SimpleBehaviors
  *  */
 
 import * as T from "../CS559-THREE/build/three.module.js";
 
-/** @module SimpleBehaviors */
-
 // we need to have the BaseClass definition
 import { GrObject } from "./GrObject.js";
 /**
- *
+ * Simple spinning behavior as an example of how to create behaviors as functions
+ * 
  * @param {GrObject} grobj
  * @param {number} [speed]
  */

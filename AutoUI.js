@@ -5,9 +5,9 @@
  * CS559 3D World Framework Code
  *
  * Simple, automatic UI from an object with properly declared parameters
- */
-
-/** @module AutoUI */
+ * 
+ * @module AutoUI 
+ * */
 
 // we need to have the BaseClass definition
 import { GrObject } from "./GrObject.js";
