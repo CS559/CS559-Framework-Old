@@ -14,6 +14,8 @@ If you want to read about the history of Graphics Town (prior to 2014) and see w
 
 **WARNING:** This documentation is created using JSDoc, and I am not a JSDoc expert. You should also read the code directly. There may also be version skew between the documentation and the code. Trust the code.
 
+A version of the documentation is available on [GitHub Pages](https://cs559.github.io/CS559-Framework/).
+
 ## What you really want to know
 
 Most of the work that you will do (as a student) will be creating subclasses of `GrObject` to make new kinds of objects for the world. You should make sure you understand how `GrObject` works. You can see examples in `SimpleObjects` and `TestObjects`. Even more examples are provided with the assignments.
