@@ -52,7 +52,7 @@ export class HingeCube extends GrObject {
     mesh2.position.z = 0.5;
     group.add(g2);
 
-    super(`DumpCube-${testobjsctr++}`, group, [
+    super(`HingeCube-${testobjsctr++}`, group, [
       ["x", -5, 5, 2],
       ["z", -5, 5, 2],
       ["theta", -180, 180, 0],
