@@ -18,8 +18,10 @@ import * as T from "../CS559-THREE/build/three.module.js";
 
 let simpleObjectCounter = 0;
 
-// a simple GrObject - a cube
+
 /**
+ * we pass a set of properties to a cube to allow for flexible parameters
+ * 
  * @typedef CubeProperties
  * @type {object}
  * @property {THREE.Material} [material]
@@ -31,6 +33,10 @@ let simpleObjectCounter = 0;
  * @property {number} [widthSegments=8] - only for Sphere
  * @property {number} [heightSegments=6] - only for Sphere
  */
+
+ /**
+  * A simple GrObject: A cube - allows for setting various parameters as parameters
+  */
 export class GrCube extends GrObject {
   /**
    * @param {CubeProperties} params
@@ -59,6 +65,9 @@ export class GrCube extends GrObject {
   }
 }
 
+/**
+ * A simple object: A sphere (not it uses the CubeParams, since they apply as well)
+ */
 export class GrSphere extends GrObject {
   /**
    * @param {CubeProperties} params
@@ -93,6 +102,9 @@ export class GrSphere extends GrObject {
   }
 }
 
+/**
+ * A simple object: a rectangle/square (flat) - useful for making signs
+ */
 export class GrSquareSign extends GrObject {
   /**
    *
@@ -146,6 +158,10 @@ export class GrSquareSign extends GrObject {
   }
 }
 
+/**
+ * A "simple" object (TorusKnot) - this is built into THREE, so the code here is simple,
+ * but the object itself has non-simple appearance
+ */
 export class GrTorusKnot extends GrObject {
   /**
    * @param {Object} [params]
@@ -182,4 +198,36 @@ export class GrTorusKnot extends GrObject {
     let size = params.size || 1.0;
     mesh.scale.set(size, size, size);
   }
+}
+
+/**
+ * A "simple" object - a group
+ * Remember that the framework doesn't actually handle hierarchy - you add THREE Object3D to the group
+ */
+export class GrGroup extends GrObject {
+  /**
+   * @param {Object} [params]
+   * @param {number} [params.x]
+   * @param {number} [params.y]
+   * @param {number} [params.z]
+   * @param {Array<string|Array>} [paramInfo] - parameters for the GrObject (for sliders)
+   */
+    constructor(params = {}, paramInfo = []) {
+        let group = new T.Group();
+
+        super(`Group-${simpleObjectCounter++}`, group, paramInfo);
+
+        // put the object in its place
+        group.position.x = params.x ? Number(params.x) : 0;
+        group.position.y = params.y ? Number(params.y) : 0;
+        group.position.z = params.z ? Number(params.z) : 0;
+    }
+    /**
+     * Add an Object3D to the group (not a GrObject!)
+     * 
+     * @param {T.Object3D}
+     */
+    add(obj) {
+        this.objects[0].add(obj);
+    }
 }
