@@ -11,6 +11,8 @@
  *
  * There are a few variants of the ground plane. We'll give the simple ones
  * at first, since students will make better ones in later projects.
+ * 
+ * @Module GroundPlane
  */
 
 // we need to have the BaseClass definition

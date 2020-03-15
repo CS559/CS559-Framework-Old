@@ -4,10 +4,10 @@
 /**
  * CS559 3D World Framework Code
  *
- * Simple, automatic UI from an world with properly declared parameters
- */
-
-/** @module AutoUI */
+ * Simple, automatic UI from a  GrWorld 
+ *
+ * @module WorldUI 
+ * */
 
 // we need to have the BaseClass definition
 import { GrObject } from "./GrObject.js";
@@ -18,10 +18,11 @@ import * as T from "../CS559-THREE/build/three.module.js";
 
 export class WorldUI {
   /**
-   * Create a UI panel for a GrObject
-   * goes through the parameters and makes a slider for each
-   * also defines a callback for those sliders that calls the
-   * world's update function.
+   * Create a UI panel for a GrWorld - this mimics the AutoUI
+   * for GrObject.
+   * 
+   * Note: this just creates controls for the world parameters. 
+   * It does not create UIs for the objects in the world
    *
    * This does place the panel into the DOM (onto the web page)
    * using `insertElement` in the CS559 helper library. The place

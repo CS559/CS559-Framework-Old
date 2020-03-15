@@ -3,6 +3,8 @@
 
 /**
  * Access to THREE's loaders within the CS559 framework
+ * 
+ * @module loaders
  */
 
 import * as T from "../CS559-THREE/build/three.module.js";
@@ -102,7 +104,11 @@ export class ObjGrObject extends GrObject {
   }
 }
 
-/* load from an FBX file */
+/** 
+ * load from an FBX file - this is quite simple 
+ * it makes a group so it can stick the FBX object in once
+ * it is loaded
+ * */
 export class FbxGrObject extends GrObject {
   /**
    *
