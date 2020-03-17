@@ -15,6 +15,7 @@ import { GrObject } from "./GrObject.js";
 import * as InputHelpers from "../CS559-Libs/inputHelpers.js";
 import { GrWorld } from "./GrWorld.js";
 import * as T from "../CS559-THREE/build/three.module.js";
+import { panelPanel } from "./AutoUI.js";
 
 export class WorldUI {
   /**
@@ -26,9 +27,9 @@ export class WorldUI {
    *
    * This does place the panel into the DOM (onto the web page)
    * using `insertElement` in the CS559 helper library. The place
-   * it is placed is controlled the `where` parameter. By default,
-   * it goes at the end of the DOM. However, you can pass it a DOM
-   * element to be placed inside (or some other choices as well).
+   * it is placed is controlled the `where` parameter. If you don't
+   * pass a place, it puts it in a "Panel Panel" at the end of the DOM 
+   * (see AutoUI)
    *
    * @param {GrWorld} world
    * @param {number} [width=300]
@@ -37,6 +38,16 @@ export class WorldUI {
   constructor(world, width = 300, where = undefined) {
     let self = this;
     this.world = world;
+
+    /* if no where is provided, put it at the end of the panel panel - assuming there is one */
+    if (!where) {
+        if (!panelPanel) {
+            panelPanel = InputHelpers.makeFlexDiv();
+        }
+        where = panelPanel;
+    }
+
+
     this.div = InputHelpers.makeBoxDiv({ width: width }, where);
     InputHelpers.makeHead("World Controls", this.div, { tight: true });
     let _world = this.world;

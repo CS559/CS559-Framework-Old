@@ -34,6 +34,15 @@ export class AutoUI {
   constructor(object, width = 300, where = undefined) {
     let self = this;
     this.object = object;
+
+    /* if no where is provided, put it at the end of the panel panel - assuming there is one */
+    if (!where) {
+        if (!panelPanel) {
+            panelPanel = InputHelpers.makeFlexDiv();
+        }
+        where = panelPanel;
+    }
+
     this.div = InputHelpers.makeBoxDiv({ width: width }, where);
     InputHelpers.makeHead(object.name, this.div, { tight: true });
     this.sliders = object.params.map(function(param) {
@@ -79,3 +88,13 @@ export class AutoUI {
     }
   }
 }
+
+/**
+ * This is a "global" variable - if panels are placed without a where,
+ * we make a DIV (the "panel panel") and put them in there - this way
+ * we can get floating
+ * 
+ * @type{HTMLElement}
+ */
+export let panelPanel;
+
