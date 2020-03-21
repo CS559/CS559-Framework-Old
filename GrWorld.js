@@ -633,7 +633,9 @@ export class GrWorld {
     // since we're already running an animation loop, update view controls here.
     // Pass in a delta since that's what fly controls want. Orbit controls can just ignore.
     if (this.view_mode == "Orbit Camera") {
-      this.orbit_controls.update();
+        // if there is an orthographic camera, we might not have this!
+        if (this.orbit_controls) 
+            this.orbit_controls.update();
     } else if (this.view_mode == "Fly Camera") {
       this.fly_controls.update(0.1);
     }
