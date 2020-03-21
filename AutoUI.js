@@ -31,7 +31,7 @@ export class AutoUI {
    * @param {number} [width=300]
    * @param {InputHelpers.WhereSpec} [where] - where to place the panel in the DOM (at the end of the page by default)
    */
-  constructor(object, width = 300, where = undefined) {
+  constructor(object, width = 300, where = undefined, widthdiv=1) {
     let self = this;
     this.object = object;
 
@@ -43,12 +43,13 @@ export class AutoUI {
         where = panelPanel;
     }
 
-    this.div = InputHelpers.makeBoxDiv({ width: width }, where);
+    this.div = InputHelpers.makeBoxDiv({ width: width, flex: widthdiv>1 }, where);
     InputHelpers.makeHead(object.name, this.div, { tight: true });
+    if (widthdiv>1) InputHelpers.makeFlexBreak(this.div);
     this.sliders = object.params.map(function(param) {
       let slider = new InputHelpers.LabelSlider(param.name, {
         where: self.div,
-        width: width - 20,
+        width: (width / widthdiv) - 20,
         min: param.min,
         max: param.max,
         step: param.step ? param.step : ((param.max - param.min) / 30),
