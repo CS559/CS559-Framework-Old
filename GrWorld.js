@@ -645,11 +645,18 @@ export class GrWorld {
   /**
    * start an (endless) animation loop - this just keeps going
    */
-  go() {
+  go(params = {}) {
+    let count = 0;
     // remember, this gets redefined (it doesn't follow scope rules)
     let self = this;
     function loop() {
       self.animate();
+      if (params.postAnimate) { params.postAnimate(this);} 
+
+      if (!count && params.first) { params.first(this); }
+    
+      count += 1;
+
       // self.draw();     // animate does the draw
       window.requestAnimationFrame(loop);
     }
