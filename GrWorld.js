@@ -135,6 +135,9 @@ export class GrWorld {
       this.add(this.groundplane);
     }
 
+    // we need this variable out here since we need to refer to it later
+    let lookat = params.lookat;
+
     // make a camera
     /** @type {THREE.PerspectiveCamera} */
     this.camera = undefined;
@@ -148,12 +151,11 @@ export class GrWorld {
         "far" in params ? params.far : 2000
       );
       /* figure out a default lookat */
-      let lookat = params.lookat;
       if (!("lookat" in params)) {
         lookat = new T.Vector3(0, 0, 0);
       }
       let lookfrom = params.lookfrom;
-      if (!("lookat" in params)) {
+      if (!("lookfrom" in params)) {
         let gpSize = this.groundplane ? this.groundplane.size : 10;
         lookfrom = new T.Vector3(gpSize / 2, gpSize, gpSize * 2);
       }
@@ -175,6 +177,8 @@ export class GrWorld {
         this.renderer.domElement
       );
       this.orbit_controls.keys = { UP: 87, BOTTOM: 83, LEFT: 65, RIGHT: 68 };
+      this.orbit_controls.target = lookat;
+
       // For some reason, this version of three is missing the saveState method.
       // Hack in something here to at least save something.
       let orbitSaveState = function() {
