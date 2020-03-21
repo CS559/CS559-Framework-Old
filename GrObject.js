@@ -23,6 +23,14 @@ import * as T from "../CS559-THREE/build/three.module.js";
  * This function converts from the specifications given to the `GrObject`
  * constructor into the form used internally. It is the best documentation for
  * how those descriptions are interpretted.
+ * 
+ * when creating an object, a parameter is defined by an array of up to 
+ * 5 things
+ * name (string)
+ * min (number)
+ * max (number)
+ * initial value (number)
+ * step size for slider (number)
  *
  * **Note:** this function is for internal use, but it is exported to convince
  * JSDoc to document it.
@@ -91,8 +99,8 @@ export class GrObject {
   /**
    * The parameter list (if provided) should be either a string
    * (with the name of the parameter) or an Array with the first
-   * value being a string (the name), and the remaining 3 values being
-   * numbers: min, max, and initial value (all optional).
+   * value being a string (the name), and the remaining 4 values being
+   * numbers: min, max, initial value, and step size (all optional).
    * @see paramObjFromParam
    *
    * @param {String} name - unique name for the object
