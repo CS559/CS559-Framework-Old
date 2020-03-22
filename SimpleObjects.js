@@ -85,7 +85,6 @@ export class GrSphere extends GrObject {
       params.widthSegments ? params.widthSegments : 8,
       params.heightSegments ? params.heightSegments : 6
     );
-    console.log(params.widthSegments);
 
     let mesh = new T.Mesh(geom, material);
     // note that we have to make the Object3D before we can call
