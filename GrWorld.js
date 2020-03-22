@@ -47,6 +47,7 @@ import { FlyControls } from "../CS559-THREE/examples/jsm/controls/FlyControls.js
  * @property [groundplanesize=5] - if we create a ground plane, how big
  * @property [lookfrom] - where to put the camera (only if we make the camera)
  * @property [lookat] - where to have the camera looking (only if we make the camera)
+ * @property [background="black"] - color to set the background
  * @property {HTMLInputElement} [runbutton] - a checkbox (HTML) to switch things on or off (can be undefined)
  * @property {HTMLInputElement} [speedcontrol] - a slider to get the speed (must be an HTML element, not a LabelSlider)
  */
@@ -85,6 +86,7 @@ export class GrWorld {
     this.scene = new T.Scene();
     this.solo_scene = new T.Scene(); // secondary scene for showing a solo object.
     this.active_scene = this.scene; // active scene to draw.
+    this.scene.background = new T.Color(params.background ? params.background : "black")
 
     // make a renderer if it isn't given
     /** @type THREE.WebGLRenderer */
