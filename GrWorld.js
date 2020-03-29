@@ -134,8 +134,10 @@ export class GrWorld {
         0.2,
         params.groundplanecolor || "darkgreen"
       );
-      this.add(this.groundplane);
     }
+    if (this.groundplane)
+        this.add(this.groundplane);
+
 
     // we need this variable out here since we need to refer to it later
     let lookat = params.lookat;

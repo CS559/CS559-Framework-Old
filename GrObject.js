@@ -207,4 +207,27 @@ export class GrObject {
 
     return [fx, fy, fz, x, y, z];
   }
+
+  /**
+   * helper method - set the scale of the objects 
+   * note: this sets the scale of all the root level objects
+   * it doesn't consider what was already there
+   * also, it is only a uniform method
+   * 
+   * @param {number} scale=1.0
+   */
+  setScale(scale=1.0) {
+      this.objects.forEach(e => e.scale.set(scale,scale,scale));
+  }
+
+  /**
+   * set the position of each (root level) object
+   * 
+   * @param {number} x 
+   * @param {number} y 
+   * @param {number} z 
+   */
+  setPos(x=0, y=0, z=0) {
+    this.objects.forEach(e => e.position.set(x,y,z));
+  }
 }
