@@ -44,6 +44,13 @@ function normObject(obj, scale = 1.0, center = true, ground = true) {
 }
 
 /**
+ * The loaders have optional callbacks that take a GrObject (not an Object3D!)
+ * 
+ * @callback LoaderCallback
+ * @param {GrObject} object
+ */
+
+/**
  * A base class of GrObjects loaded from an OBJ file
  * note: this has to deal with the deferred loading
  *
@@ -55,12 +62,13 @@ export class ObjGrObject extends GrObject {
    * @param {Object} params
    * @property {string} params.obj
    * @property {string} [params.mtl]
+   * @property {string} [params.name]
    * @property {Object} [params.mtloptions]
-   * @property {Number} [norm] - normalize the object (make the largest dimension this value)
-   * @property {Number} [x] - initial translate for the group
-   * @property {Number} [y]
-   * @property {Number} [z]
-   * @property {String} [name]
+   * @property {Number} [params.norm] - normalize the object (make the largest dimension this value)
+   * @property {Number} [params.x] - initial translate for the group
+   * @property {Number} [params.y]
+   * @property {Number} [params.z]
+   * @property {LoaderCallback} [params.callback]
    */
   constructor(params = {}) {
     if (!params.obj) {
@@ -68,10 +76,11 @@ export class ObjGrObject extends GrObject {
       throw "No OBJ given!";
     }
 
-    let name = params.name || "Objfile(UNNAMED)";
+    let name = params.name || `Objfile(${params.obj})`;
     let objholder = new T.Group();
 
     super(name, objholder);
+    let self=this;
 
     // if there is a material, load it first, and then have that load the OBJ file
     if (params.mtl) {
@@ -88,6 +97,7 @@ export class ObjGrObject extends GrObject {
         objLoader.load(params.obj, function(obj) {
           if (params.norm) normObject(obj, params.norm);
           objholder.add(obj);
+          if (params.callback) params.callback(self);
         });
       });
     } else {
@@ -96,7 +106,8 @@ export class ObjGrObject extends GrObject {
       objLoader.load(params.obj, function(obj) {
         if (params.norm) normObject(obj, params.norm);
         objholder.add(obj);
-      });
+        if (params.callback) params.callback(self);
+    });
     }
     objholder.translateX(params.x || 0);
     objholder.translateY(params.y || 0);
@@ -114,21 +125,24 @@ export class FbxGrObject extends GrObject {
    *
    * @param {Object} [params]
    * @property {string} params.fbx
-   * @property {Number} [norm] - normalize the object (make the largest dimension this value)
-   * @property {Number} [x] - initial translate for the group
-   * @property {Number} [y]
-   * @property {Number} [z]
-   * @property {String} [name]
+   * @property {Number} [params.norm] - normalize the object (make the largest dimension this value)
+   * @property {Number} [params.x] - initial translate for the group
+   * @property {Number} [params.y]
+   * @property {Number} [params.z]
+   * @property {String} [params.name]
+   * @property {LoaderCallback} [params.callback]
    */
   constructor(params = {}) {
-    let name = params.name || "FBXfile(UNNAMED)";
+    let name = params.name || `FBXfile(${params.fbx})`;
     let objholder = new T.Group();
     super(name, objholder);
+    let self=this;
 
     let fbx = new FBXLoader();
     fbx.load(params.fbx, function(obj) {
       if (params.norm) normObject(obj, params.norm);
       objholder.add(obj);
+      if (params.callback) params.callback(self);
     });
     objholder.translateX(params.x || 0);
     objholder.translateY(params.y || 0);
