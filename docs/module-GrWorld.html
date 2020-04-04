@@ -933,6 +933,295 @@ we'll guess at something if you don't give it to us</p>
 
 
             
+                
+<h4 class="name" id="~WorldCallbacks">WorldCallbacks</h4>
+
+
+
+
+<div class="description">
+    <p>callback list - used in 2 places, so document once</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>prefirst</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>called before the first loop go around</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pretick</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>called before the tick (even if there is no tick)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tick</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>called after the tick (only if there is a tick)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>predraw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>called before drawing (after the tick - if there is one)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>postdraw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>called after drawing</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>first</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>called after the end of the first loop go-around</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="GrWorld.js.html">GrWorld.js</a>, <a href="GrWorld.js.html#line631">line 631</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
     
 
     
@@ -946,13 +1235,13 @@ we'll guess at something if you don't give it to us</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AutoUI.html">AutoUI</a></li><li><a href="module-GrObject.html">GrObject</a></li><li><a href="module-GroundPlane.html">GroundPlane</a></li><li><a href="module-GrWorld.html">GrWorld</a></li><li><a href="module-loaders.html">loaders</a></li><li><a href="module-shaderHelper.html">shaderHelper</a></li><li><a href="module-SimpleBehaviors.html">SimpleBehaviors</a></li><li><a href="module-SimpleObjects.html">SimpleObjects</a></li><li><a href="module-TestObjects.html">TestObjects</a></li><li><a href="module-WorldUI.html">WorldUI</a></li></ul><h3>Classes</h3><ul><li><a href="module-AutoUI.AutoUI.html">AutoUI</a></li><li><a href="module-GrObject.GrObject.html">GrObject</a></li><li><a href="module-GroundPlane.SimpleGroundPlane.html">SimpleGroundPlane</a></li><li><a href="module-GrWorld.GrWorld.html">GrWorld</a></li><li><a href="module-loaders.FbxGrObject.html">FbxGrObject</a></li><li><a href="module-loaders.ObjGrObject.html">ObjGrObject</a></li><li><a href="module-SimpleObjects.GrCube.html">GrCube</a></li><li><a href="module-SimpleObjects.GrGroup.html">GrGroup</a></li><li><a href="module-SimpleObjects.GrSphere.html">GrSphere</a></li><li><a href="module-SimpleObjects.GrSquareSign.html">GrSquareSign</a></li><li><a href="module-SimpleObjects.GrTorusKnot.html">GrTorusKnot</a></li><li><a href="module-TestObjects.BetterDelayTest.html">BetterDelayTest</a></li><li><a href="module-TestObjects.DelayTest.html">DelayTest</a></li><li><a href="module-TestObjects.HingeCube.html">HingeCube</a></li><li><a href="module-TestObjects.MaterialDelayTest.html">MaterialDelayTest</a></li><li><a href="module-TestObjects-CheckSign.html">CheckSign</a></li><li><a href="module-WorldUI.WorldUI.html">WorldUI</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AutoUI.html">AutoUI</a></li><li><a href="module-GrObject.html">GrObject</a></li><li><a href="module-GroundPlane.html">GroundPlane</a></li><li><a href="module-GrWorld.html">GrWorld</a></li><li><a href="module-loaders.html">loaders</a></li><li><a href="module-shaderHelper.html">shaderHelper</a></li><li><a href="module-SimpleBehaviors.html">SimpleBehaviors</a></li><li><a href="module-SimpleObjects.html">SimpleObjects</a></li><li><a href="module-TestObjects.html">TestObjects</a></li><li><a href="module-WorldUI.html">WorldUI</a></li></ul><h3>Classes</h3><ul><li><a href="module-AutoUI.AutoUI.html">AutoUI</a></li><li><a href="module-GrObject.GrObject.html">GrObject</a></li><li><a href="module-GroundPlane.SimpleGroundPlane.html">SimpleGroundPlane</a></li><li><a href="module-GrWorld.GrWorld.html">GrWorld</a></li><li><a href="module-loaders.FbxGrObject.html">FbxGrObject</a></li><li><a href="module-loaders.ObjGrObject.html">ObjGrObject</a></li><li><a href="module-SimpleObjects.GrCube.html">GrCube</a></li><li><a href="module-SimpleObjects.GrCylinder.html">GrCylinder</a></li><li><a href="module-SimpleObjects.GrGroup.html">GrGroup</a></li><li><a href="module-SimpleObjects.GrSphere.html">GrSphere</a></li><li><a href="module-SimpleObjects.GrSquareSign.html">GrSquareSign</a></li><li><a href="module-SimpleObjects.GrTorusKnot.html">GrTorusKnot</a></li><li><a href="module-TestObjects.BetterDelayTest.html">BetterDelayTest</a></li><li><a href="module-TestObjects.DelayTest.html">DelayTest</a></li><li><a href="module-TestObjects.HingeCube.html">HingeCube</a></li><li><a href="module-TestObjects.MaterialDelayTest.html">MaterialDelayTest</a></li><li><a href="module-TestObjects-CheckSign.html">CheckSign</a></li><li><a href="module-WorldUI.WorldUI.html">WorldUI</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Wed Apr 01 2020 21:43:58 GMT-0500 (Central Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Sat Apr 04 2020 15:09:54 GMT-0500 (Central Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
