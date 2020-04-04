@@ -628,41 +628,68 @@ export class GrWorld {
     this.objects.forEach(obj => obj.tick(delta, timeOfDay));
   }
 
-  /**
-   * perform a cycle of the animation loop - this measures the time since the
-   * last redraw and advances that much before redrawing
-   */
-  animate() {
-    if (!this.runbutton || this.runbutton.checked) {
-      let delta = performance.now() - this.lastRenderTime;
-      let speed = this.speedcontrol ? Number(this.speedcontrol.value) : 1.0;
-      this.tick(delta * speed, this.lastTimeOfDay);
-    }
-    // since we're already running an animation loop, update view controls here.
-    // Pass in a delta since that's what fly controls want. Orbit controls can just ignore.
-    if (this.view_mode == "Orbit Camera") {
-        // if there is an orthographic camera, we might not have this!
-        if (this.orbit_controls) 
+  /** callback list - used in 2 places, so document once 
+   * @typedef {Object} WorldCallbacks
+    * @property {function} [prefirst] - called before the first loop go around
+    * @property {function} [pretick] - called before the tick (even if there is no tick)
+    * @property {function} [tick] - called after the tick (only if there is a tick)
+    * @property {function} [predraw] - called before drawing (after the tick - if there is one)
+    * @property {function} [postdraw] - called after drawing
+    * @property {function} [first] - called after the end of the first loop go-around
+   * 
+  */
+
+   /**
+     * perform a cycle of the animation loop - this measures the time since the
+     * last redraw and advances that much before redrawing
+     * 
+     * because draw is part of animate, the callbacks are handled here
+     * 
+     * @param {WorldCallbacks} [callbacks]
+     */
+    animate(callbacks = {}) {
+        let count = 0;
+
+        if (!count && callbacks.prefirst) { callbacks.prefirst(this); }   
+        if (callbacks.pretick) callbacks.pretick(this);
+
+        if (!this.runbutton || this.runbutton.checked) {
+            let delta = performance.now() - this.lastRenderTime;
+            let speed = this.speedcontrol ? Number(this.speedcontrol.value) : 1.0;
+            this.tick(delta * speed,this.lastTimeOfDay);
+            if (callbacks.tick) callbacks.tick(this);
+        }
+        // since we're already running an animation loop, update view controls here.
+        // Pass in a delta since that's what fly controls want. Orbit controls can just ignore.
+        if (this.view_mode == "Orbit Camera")
+        {
             this.orbit_controls.update();
-    } else if (this.view_mode == "Fly Camera") {
-      this.fly_controls.update(0.1);
+        }
+        else if (this.view_mode == "Fly Camera")
+        {
+            this.fly_controls.update(0.1);
+        }
+        if (callbacks.predraw) callbacks.predraw(this);
+        this.draw();
+        if (callbacks.postdraw) callbacks.postdraw(this);
+
+        if (!count && callbacks.first) { callbacks.first(this); }   
+        count += 1; 
     }
-    this.draw();
-  }
 
   /**
    * start an (endless) animation loop - this just keeps going
+   *
+   * 
+   * @param {WorldCallbacks} callbacks 
    */
-  go(params = {}) {
+  go(callbacks = {}) {
     let count = 0;
     // remember, this gets redefined (it doesn't follow scope rules)
     let self = this;
     function loop() {
-      self.animate();
-      if (params.postAnimate) { params.postAnimate(this);} 
+      self.animate(callbacks);
 
-      if (!count && params.first) { params.first(this); }
-    
       count += 1;
 
       // self.draw();     // animate does the draw
