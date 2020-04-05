@@ -74,6 +74,9 @@ export class GrWorld {
     /** @type {Number} */
     this.objCount = 0;
 
+    /** @type {Number} */
+    this.animCount = 0;
+
     // mainly a set for checking object name legality
     /** @type {Object} */
     this.objNames = {};
@@ -648,9 +651,7 @@ export class GrWorld {
      * @param {WorldCallbacks} [callbacks]
      */
     animate(callbacks = {}) {
-        let count = 0;
-
-        if (!count && callbacks.prefirst) { callbacks.prefirst(this); }   
+        if (!this.animCount && callbacks.prefirst) { callbacks.prefirst(this); }   
         if (callbacks.pretick) callbacks.pretick(this);
 
         if (!this.runbutton || this.runbutton.checked) {
@@ -673,8 +674,8 @@ export class GrWorld {
         this.draw();
         if (callbacks.postdraw) callbacks.postdraw(this);
 
-        if (!count && callbacks.first) { callbacks.first(this); }   
-        count += 1; 
+        if (!this.animCount && callbacks.first) { callbacks.first(this); }   
+        this.animCount += 1; 
     }
 
   /**
