@@ -215,9 +215,13 @@ export class GrObject {
    * also, it is only a uniform method
    * 
    * @param {number} scale=1.0
+   * @param {number} sy=0
+   * @param {number} sz=0
    */
-  setScale(scale=1.0) {
-      this.objects.forEach(e => e.scale.set(scale,scale,scale));
+  setScale(scale=1.0, sy=0, sz=0) {
+      let syy = sy || scale;
+      let szz = sz || scale;
+      this.objects.forEach(e => e.scale.set(scale,syy,szz));
   }
 
   /**
