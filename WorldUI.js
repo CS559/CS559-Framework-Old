@@ -74,6 +74,8 @@ export class WorldUI {
         this.chkSolo.onclick = function () {
             // avoid this as it is ambiguous when reading the code and lacks type info
             if (self.chkSolo.checked) {
+                // we need to have some active object - so update it!
+                _world.setActiveObject(self.selectLook.value);
                 _world.showSoloObject();
             } else {
                 _world.showWorld();
@@ -84,6 +86,13 @@ export class WorldUI {
             this.div
         );
         this.selectViewMode.onchange = function () {
+            // if we're driving or following make sure we have something to ride/follow
+            if (
+                self.selectViewMode.value == "Drive Object" ||
+                self.selectViewMode.value  == "Follow Object"
+            ) {
+                _world.setActiveObject(self.selectRideable.value);
+            }
             // avoid this as it is ambiguous when reading the code and lacks type info
             _world.setViewMode(self.selectViewMode.value);
         };
@@ -113,6 +122,7 @@ export class WorldUI {
             this.div
         );
         this.selectLook.onchange = function () {
+            // if we were driving, stop!
             if (
                 world.view_mode == "Drive Object" ||
                 world.view_mode == "Follow Object"
@@ -120,6 +130,7 @@ export class WorldUI {
                 _world.setViewMode("Orbit Camera");
                 self.selectViewMode.value = "Orbit Camera";
             }
+
             let name = self.selectLook.value;
             _world.setActiveObject(name);
             let obj = _world.objects.find(ob => ob.name === name);
