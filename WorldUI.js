@@ -15,7 +15,7 @@ import { GrObject } from "./GrObject.js";
 import * as InputHelpers from "../CS559-Libs/inputHelpers.js";
 import { GrWorld } from "./GrWorld.js";
 import * as T from "../CS559-THREE/build/three.module.js";
-import { panelPanel } from "./AutoUI.js";
+import { panel } from "./AutoUI.js";
 
 export class WorldUI {
   /**
@@ -41,10 +41,7 @@ export class WorldUI {
 
     /* if no where is provided, put it at the end of the panel panel - assuming there is one */
     if (!where) {
-        if (!panelPanel) {
-            panelPanel = InputHelpers.makeFlexDiv();
-        }
-        where = panelPanel;
+        where = panel();
     }
 
 

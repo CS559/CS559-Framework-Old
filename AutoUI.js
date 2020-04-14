@@ -14,6 +14,22 @@ import { GrObject } from "./GrObject.js";
 // we need to import the module to get its typedefs for the type checker
 import * as InputHelpers from "../CS559-Libs/inputHelpers.js";
 
+/**
+ * This is a "global" variable - if panels are placed without a where,
+ * we make a DIV (the "panel panel") and put them in there - this way
+ * we can get floating
+ * 
+ * @type{HTMLElement}
+ */
+let panelPanel;
+// since exports are read only, always access it by a function that will make it
+export function panel() {
+    if (!panelPanel) {
+        panelPanel = InputHelpers.makeFlexDiv();
+    }
+    return panelPanel;
+}
+
 export class AutoUI {
   /**
    * Create a UI panel for a GrObject
@@ -37,10 +53,7 @@ export class AutoUI {
 
     /* if no where is provided, put it at the end of the panel panel - assuming there is one */
     if (!where) {
-        if (!panelPanel) {
-            panelPanel = InputHelpers.makeFlexDiv();
-        }
-        where = panelPanel;
+        where=panel();
     }
 
     this.div = InputHelpers.makeBoxDiv({ width: width, flex: widthdiv>1 }, where);
@@ -90,12 +103,4 @@ export class AutoUI {
   }
 }
 
-/**
- * This is a "global" variable - if panels are placed without a where,
- * we make a DIV (the "panel panel") and put them in there - this way
- * we can get floating
- * 
- * @type{HTMLElement}
- */
-export let panelPanel;
 
