@@ -72,7 +72,8 @@ export class WorldUI {
             "View Solo Object"
         );
         this.chkSolo.onclick = function () {
-            if (this.checked) {
+            // avoid this as it is ambiguous when reading the code and lacks type info
+            if (self.chkSolo.checked) {
                 _world.showSoloObject();
             } else {
                 _world.showWorld();
@@ -83,7 +84,8 @@ export class WorldUI {
             this.div
         );
         this.selectViewMode.onchange = function () {
-            _world.setViewMode(this.value);
+            // avoid this as it is ambiguous when reading the code and lacks type info
+            _world.setViewMode(self.selectViewMode.value);
         };
         this.selectViewMode.onchange(null);
 
@@ -97,7 +99,8 @@ export class WorldUI {
             this.div
         );
         this.selectRideable.onchange = function () {
-            _world.setActiveObject(this.value);
+            // avoid this as it is ambiguous when reading the code and lacks type info
+            _world.setActiveObject(self.selectRideable.value);
             _world.setViewMode("Drive Object");
             self.selectViewMode.value = "Drive Object";
         };
@@ -117,7 +120,7 @@ export class WorldUI {
                 _world.setViewMode("Orbit Camera");
                 self.selectViewMode.value = "Orbit Camera";
             }
-            let name = this.value;
+            let name = self.selectLook.value;
             _world.setActiveObject(name);
             let obj = _world.objects.find(ob => ob.name === name);
             let camparams = obj.lookFromLookAt();
