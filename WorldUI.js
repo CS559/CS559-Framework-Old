@@ -87,6 +87,7 @@ export class WorldUI {
         );
         this.selectViewMode.onchange = function () {
             // if we're driving or following make sure we have something to ride/follow
+            // note that we need to do this before setting the mode
             if (
                 self.selectViewMode.value == "Drive Object" ||
                 self.selectViewMode.value  == "Follow Object"
